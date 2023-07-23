@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="csvProcessor" class="org.service.CsvProcessor">
+
+  </bean>
+
+  <bean id="testProcessor" class="org.service.TestProcessor">
+
+  </bean>
+
+  <bean id="viewer" class="org.service.Viewer">
+    <constructor-arg ref="csvProcessor"/>
+    <constructor-arg ref="testProcessor"/>
+  </bean>
+
+</beans>

@@ -1,11 +1,12 @@
 package org.entity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Test {
+  private String name;
   private String question;
-
-  private Map<String, Boolean> answerOptions;
+  private Map<String, Boolean> answers = new HashMap<>();
 
   public String getQuestion() {
     return question;
@@ -15,11 +16,11 @@ public class Test {
     this.question = question;
   }
 
-  public Map<String, Boolean> getAnswerOptions() {
-    return answerOptions;
+  public Map<String, Boolean> getAnswers() {
+    return answers;
   }
 
-  public void setAnswerOptions(Map<String, Boolean> answerOptions) {
-    this.answerOptions = answerOptions;
+  public void setAnswers(Map<String, Boolean> answers) {
+    this.answers = answers;
   }
 }
