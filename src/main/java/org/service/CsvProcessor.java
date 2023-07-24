@@ -18,7 +18,7 @@ public class CsvProcessor {
 
   public Test processTest(Path filePath) {
     List<String[]> list = new ArrayList<>();
-    try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+    try (Reader reader = Files.newBufferedReader(filePath)) {
       try (CSVReader csvReader = new CSVReader(reader)) {
         String[] line;
         while ((line = csvReader.readNext()) != null) {

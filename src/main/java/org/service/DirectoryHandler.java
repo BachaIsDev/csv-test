@@ -14,7 +14,4 @@ public class DirectoryHandler {
     this.basePath = basePath;
   }
 
-  public Path connectToCatalog(){
-    return Paths.get(basePath);
-  }
 }

@@ -38,35 +38,35 @@ public class AppService {
     }
 
     if (choiceAsInt == 1) {
-      launchWithExternal();
+      launchWithExternalTest();
     } else if (choiceAsInt == 2) {
-      launchWithInternal();
+      launchWithInternalTest();
     }
   }
 
-  private void launchWithExternal() {
-    Path path = directoryHandler.connectToCatalog();
-
-    Test test = csvProcessor.processTest(path);
-    if((test == null) || (test.getQuestion() == null)){
-      System.out.println("Test is unavailable");
-      return;
-    }
-
-    loadTestMessage(directoryHandler.getBasePath());
-
-    testProcessor.processTest(test);
+  private void launchWithExternalTest() {
+    String pathAsString = directoryHandler.getBasePath();
+    launchTest(pathAsString);
   }
 
-  private void launchWithInternal() {
-    loadTestMessage("src/main/resources/tests/");
+  private void launchWithInternalTest() {
+    String pathAsString = "src/main/resources/tests/";
+    launchTest(pathAsString);
+  }
+
+  private void launchTest(String pathAsString){
+    loadTestMessage(pathAsString);
 
     Scanner scanner = new Scanner(System.in);
 
     if (scanner.hasNext()) {
-      Path path = Paths.get("src/main/resources/tests/" + scanner.next());
+      Path path = Paths.get(pathAsString + scanner.next());
 
       Test test = csvProcessor.processTest(path);
+      if((test == null) || (test.getQuestion() == null)){
+        System.out.println("Test is unavailable");
+        return;
+      }
       testProcessor.processTest(test);
     }
   }
