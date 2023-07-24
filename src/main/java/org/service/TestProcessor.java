@@ -10,29 +10,44 @@ public class TestProcessor {
         + test.getQuestion() + "\n"
         + "Answers:" + "\n"
         + getAnswers(test));
+
+    processAnswer(test);
   }
 
-  public String getAnswers(Test test) {
-    String answersAsString = "";
-    for (String answer : test.getAnswers().keySet()) {
-      answersAsString = answersAsString + answer + "\n";
+  private void processAnswer(Test test){
+    boolean isCorrect = false;
+    System.out.println("Enter an answer: ");
+    Scanner scanner = new Scanner(System.in);
+
+    if(scanner.hasNext()){
+      isCorrect = isRight(scanner.nextLine(), test);
     }
-    return answersAsString;
+
+    if (isCorrect) {
+      System.out.println("You're right!");
+    } else {
+      System.out.println("That's not right");
+    }
+
   }
 
-  public boolean isRight(String answer, Test test) {
+  private boolean isRight(String answer, Test test) {
     boolean right = false;
     try {
       right = test.getAnswers().get(answer);
     } catch (NullPointerException e) {
-      System.out.println("There is no such option");
+      System.out.println("There is no such option!");
     }
 
     return right;
   }
 
-  public void processAnswer(){
-    Scanner scanner = new Scanner(System.in);
+  private String getAnswers(Test test) {
+    String answersAsString = "";
+    for (String answer : test.getAnswers().keySet()) {
+      answersAsString = answersAsString + answer + "\n";
+    }
 
+    return answersAsString;
   }
 }

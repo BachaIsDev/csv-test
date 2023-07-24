@@ -20,7 +20,4 @@ public class Test {
     return answers;
   }
 
-  public void setAnswers(Map<String, Boolean> answers) {
-    this.answers = answers;
-  }
 }

@@ -14,7 +14,6 @@ import java.util.Map;
 import org.entity.Test;
 import org.springframework.stereotype.Component;
 
-@Component
 public class CsvProcessor {
 
   public Test processTest(Path filePath) {
@@ -26,14 +25,20 @@ public class CsvProcessor {
           list.add(line);
         }
       }
-    } catch (IOException | CsvValidationException e) {
-      e.printStackTrace();
+    } catch (IOException e) {
+      System.out.println("Can not access file");;
+    } catch (CsvValidationException e){
+      System.out.println("Wrong csv format");
     }
     return toObject(list);
   }
 
   private Test toObject(List<String[]> readTest) {
     Test test = new Test();
+    if(readTest.isEmpty()){
+      System.out.println("File is empty");
+      return test;
+    }
     test.setQuestion(readTest.get(0)[0]);
     readTest.remove(0);
     Map<String, Boolean> asd = new HashMap<>();
@@ -43,10 +48,4 @@ public class CsvProcessor {
     return test;
   }
 
-  public void showOnConsole(Test test) {
-    System.out.println(
-        test.getQuestion() + "\n"
-            + test.getAnswers().keySet()
-    );
-  }
 }

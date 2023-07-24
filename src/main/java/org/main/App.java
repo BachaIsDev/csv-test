@@ -1,10 +1,12 @@
-package org.example;
+package org.main;
 
-import java.nio.file.Path;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
-import org.service.CsvProcessor;
-import org.service.Viewer;
+import org.service.AppService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -17,8 +19,8 @@ public class App
     {
         ClassPathXmlApplicationContext context =
             new ClassPathXmlApplicationContext("application-context.xml");
-        Viewer viewer = context.getBean("viewer", Viewer.class);
+        AppService appService = context.getBean("appService", AppService.class);
 
-        viewer.launch();
+        appService.launch();
     }
 }
