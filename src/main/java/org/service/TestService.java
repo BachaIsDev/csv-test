@@ -1,26 +1,26 @@
 package org.service;
 
 import java.util.Scanner;
-import org.entity.Test;
+import org.entity.TestEntity;
 
-public class TestProcessor {
+public class TestService {
 
-  public void processTest(Test test) {
+  public void processTest(TestEntity testEntity) {
     System.out.println("Choose right option - Question: \n"
-        + test.getQuestion() + "\n"
+        + testEntity.getQuestion() + "\n"
         + "Answers:" + "\n"
-        + getAnswers(test));
+        + getAnswers(testEntity));
 
-    processAnswer(test);
+    processAnswer(testEntity);
   }
 
-  private void processAnswer(Test test){
+  private void processAnswer(TestEntity testEntity){
     boolean isCorrect = false;
     System.out.println("Enter an answer: ");
     Scanner scanner = new Scanner(System.in);
 
     if(scanner.hasNext()){
-      isCorrect = isRight(scanner.nextLine(), test);
+      isCorrect = isRight(scanner.nextLine(), testEntity);
     }
 
     if (isCorrect) {
@@ -31,10 +31,10 @@ public class TestProcessor {
 
   }
 
-  private boolean isRight(String answer, Test test) {
+  private boolean isRight(String answer, TestEntity testEntity) {
     boolean right = false;
     try {
-      right = test.getAnswers().get(answer);
+      right = testEntity.getAnswer().getAnswers().get(answer);
     } catch (NullPointerException e) {
       System.out.println("There is no such option!");
     }
@@ -42,9 +42,9 @@ public class TestProcessor {
     return right;
   }
 
-  private String getAnswers(Test test) {
+  private String getAnswers(TestEntity testEntity) {
     String answersAsString = "";
-    for (String answer : test.getAnswers().keySet()) {
+    for (String answer : testEntity.getAnswer().getAnswers().keySet()) {
       answersAsString = answersAsString + answer + "\n";
     }
 

@@ -1,74 +1,53 @@
 package org.service;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import org.entity.Test;
+import org.entity.TestEntity;
+import org.repo.CsvProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.util.DirectoryHandler;
 
 public class AppService {
-
   private final CsvProcessor csvProcessor;
-  private final TestProcessor testProcessor;
+  private final TestService testService;
   private final DirectoryHandler directoryHandler;
+  private final String RESOURCE_PATH = "src/main/resources/tests/";
 
-  AppService(CsvProcessor csvProcessor, TestProcessor testProcessor,
+  public AppService(CsvProcessor csvProcessor, TestService testService,
       DirectoryHandler directoryHandler) {
     this.csvProcessor = csvProcessor;
-    this.testProcessor = testProcessor;
+    this.testService = testService;
     this.directoryHandler = directoryHandler;
   }
 
   public void launch() {
-    System.out.println("1. Load test  \n"
-        + "2. Launch existing tests \n"
-        + "Press Enter to exit");
-
-    Scanner scanner = new Scanner(System.in);
-    int choiceAsInt = 0;
-    if (scanner.hasNext()) {
-      String choice = scanner.next();
-      try {
-        choiceAsInt = Integer.parseInt(choice);
-      } catch (NumberFormatException e) {
-        System.out.println("incorrect input!");
-      }
-    }
-
-    if (choiceAsInt == 1) {
-      launchWithExternalTest();
-    } else if (choiceAsInt == 2) {
-      launchWithInternalTest();
-    }
-  }
-
-  private void launchWithExternalTest() {
-    String pathAsString = directoryHandler.getBasePath();
-    launchTest(pathAsString);
-  }
-
-  private void launchWithInternalTest() {
-    String pathAsString = "src/main/resources/tests/";
-    launchTest(pathAsString);
-  }
-
-  private void launchTest(String pathAsString){
-    loadTestMessage(pathAsString);
+    String fileName = "";
+    loadTestNames(RESOURCE_PATH);
+    loadTestNames(directoryHandler.getBasePath());
 
     Scanner scanner = new Scanner(System.in);
 
     if (scanner.hasNext()) {
-      Path path = Paths.get(pathAsString + scanner.next());
-
-      Test test = csvProcessor.processTest(path);
-      if((test == null) || (test.getQuestion() == null)){
-        System.out.println("Test is unavailable");
-        return;
-      }
-      testProcessor.processTest(test);
+      fileName = scanner.nextLine();
     }
+    if(directoryHandler.checkFile(RESOURCE_PATH + fileName)){
+      launchTest(RESOURCE_PATH + fileName);
+    }else {
+      launchTest(directoryHandler.getBasePath() + fileName);
+    }
+  }
+
+  private void launchTest(String path){
+    TestEntity testEntity = csvProcessor.processTest(path);
+    if((testEntity == null) || (testEntity.getQuestion() == null)){
+      System.out.println("Test is unavailable");
+      return;
+    }
+    testService.processTest(testEntity);
+
   }
 
   private List<String> getTestNames(String path) {
@@ -86,16 +65,13 @@ public class AppService {
     return fileNames;
   }
 
-  private void loadTestMessage(String path){
+  private void loadTestNames(String path){
     List<String> fileNames = getTestNames(path);
     String namesAsString = "";
     for (String name : fileNames) {
       namesAsString = namesAsString + name + "\n";
     }
-    System.out.println("Print test's name  \n"
-        + "Available tests: \n"
-        + namesAsString + "\n"
-        + "Enter name of test: ");
+    System.out.print(namesAsString);
   }
 
 }

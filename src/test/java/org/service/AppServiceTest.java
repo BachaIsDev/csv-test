@@ -5,28 +5,31 @@ import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import org.entity.TestEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.repo.CsvProcessor;
+import org.util.DirectoryHandler;
 
 @ExtendWith(MockitoExtension.class)
 class AppServiceTest {
 
   @Mock
-  CsvProcessor csvProcessor;
+  private CsvProcessor csvProcessor;
   @Mock
-  TestProcessor testProcessor;
+  private TestService testService;
   @Mock
-  DirectoryHandler directoryHandler;
+  private DirectoryHandler directoryHandler;
 
   @Mock
-  org.entity.Test test;
+  TestEntity testEntity;
 
 
   @Test
   void launch_shouldCallProcessTestFromCsv_whenSystemInIs1(){
-    AppService appService = new AppService(csvProcessor, testProcessor, directoryHandler);
+    AppService appService = new AppService(csvProcessor, testService, directoryHandler);
     String data = "1";
     InputStream stdin = System.in;
     System.setIn(new ByteArrayInputStream(data.getBytes()));

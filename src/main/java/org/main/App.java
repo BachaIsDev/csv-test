@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import org.launcher.Launcher;
 import org.service.AppService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -19,8 +20,8 @@ public class App
     {
         ClassPathXmlApplicationContext context =
             new ClassPathXmlApplicationContext("application-context.xml");
-        AppService appService = context.getBean("appService", AppService.class);
+        Launcher launcher = context.getBean("launcher", Launcher.class);
 
-        appService.launch();
+        launcher.launch();
     }
 }

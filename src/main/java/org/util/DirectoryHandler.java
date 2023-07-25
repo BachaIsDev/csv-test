@@ -1,5 +1,6 @@
-package org.service;
+package org.util;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -14,4 +15,13 @@ public class DirectoryHandler {
     this.basePath = basePath;
   }
 
+  public boolean checkFile(String path){
+    File file = new File(path);
+
+    if(file.exists()){
+      return true;
+    }
+
+    return false;
+  }
 }
