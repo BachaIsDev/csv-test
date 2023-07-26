@@ -36,6 +36,6 @@ class AppServiceTest {
     appService.launch();
     System.setIn(stdin);
 
-    verify(csvProcessor).processTest(any());
+    verify(csvProcessor).getTests(any());
   }
 }

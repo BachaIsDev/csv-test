@@ -1,15 +1,26 @@
 package org.entity;
 
-import java.util.HashMap;
-
 public class Result {
-  private HashMap<Integer, Integer> result;
+  private Double rightAnswers;
+  private Double totalAnswers;
 
-  public HashMap<Integer, Integer> getResult() {
-    return result;
+  public Double getRightAnswers() {
+    return rightAnswers;
   }
 
-  public void setResult(HashMap<Integer, Integer> result) {
-    this.result = result;
+  public void setRightAnswers(Double rightAnswers) {
+    this.rightAnswers = rightAnswers;
+  }
+
+  public Double getTotalAnswers() {
+    return totalAnswers;
+  }
+
+  public void setTotalAnswers(Double totalAnswers) {
+    this.totalAnswers = totalAnswers;
+  }
+
+  public void getResult(){
+    System.out.println(rightAnswers/totalAnswers*100 + "% correctly");
   }
 }

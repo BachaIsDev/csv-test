@@ -9,7 +9,4 @@ public class Answer {
     return answers;
   }
 
-  public void setAnswers(HashMap<String, Boolean> answers) {
-    this.answers = answers;
-  }
 }

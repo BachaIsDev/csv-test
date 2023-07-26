@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import org.entity.Result;
 import org.entity.TestEntity;
 import org.repo.CsvProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.util.DirectoryHandler;
 
 public class AppService {
@@ -25,6 +24,7 @@ public class AppService {
 
   public void launch() {
     String fileName = "";
+    System.out.println("Select a test: ");
     loadTestNames(RESOURCE_PATH);
     loadTestNames(directoryHandler.getBasePath());
 
@@ -33,6 +33,7 @@ public class AppService {
     if (scanner.hasNext()) {
       fileName = scanner.nextLine();
     }
+    System.out.println("Answer correctly as many questions as possible. Good Luck!");
     if(directoryHandler.checkFile(RESOURCE_PATH + fileName)){
       launchTest(RESOURCE_PATH + fileName);
     }else {
@@ -41,13 +42,14 @@ public class AppService {
   }
 
   private void launchTest(String path){
-    TestEntity testEntity = csvProcessor.processTest(path);
-    if((testEntity == null) || (testEntity.getQuestion() == null)){
+    List<TestEntity> testList = csvProcessor.getTests(path);
+    if(testList.isEmpty()){
       System.out.println("Test is unavailable");
       return;
     }
-    testService.processTest(testEntity);
+    Result result = testService.processTests(testList);
 
+    result.getResult();
   }
 
   private List<String> getTestNames(String path) {

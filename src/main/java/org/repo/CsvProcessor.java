@@ -7,19 +7,13 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.entity.TestEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class CsvProcessor {
 
-  private static final Logger logger =  LoggerFactory.getLogger(CsvProcessor.class);
-
-
-  public TestEntity processTest(String filePath) {
+  public List<TestEntity> getTests(String filePath) {
     List<String[]> list = new ArrayList<>();
     try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
       try (CSVReader csvReader = new CSVReader(reader)) {
@@ -36,19 +30,25 @@ public class CsvProcessor {
     return toObject(list);
   }
 
-  private TestEntity toObject(List<String[]> readTest) {
-    TestEntity testEntity = new TestEntity();
+  private List<TestEntity> toObject(List<String[]> readTest) {
+    List<TestEntity> testList = new ArrayList<>();
     if(readTest.isEmpty()){
       System.out.println("File is empty");
-      return testEntity;
+      return testList;
     }
-    testEntity.setQuestion(readTest.get(0)[0]);
-    readTest.remove(0);
-    Map<String, Boolean> asd = new HashMap<>();
+
     for (String[] strings : readTest) {
-      testEntity.getAnswer().getAnswers().put(strings[0], Boolean.parseBoolean(strings[1]));
+      TestEntity test = new TestEntity();
+      test.setQuestion(strings[0]);
+      test.getAnswer().getAnswers().put(strings[1], true);
+      for(int i = 2; i < strings.length; i++){
+        test.getAnswer().getAnswers().put(strings[i], false);
+      }
+      testList.add(test);
     }
-    return testEntity;
+    return testList;
   }
+
+
 
 }
