@@ -1,5 +1,7 @@
 package org.service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.entity.Result;
@@ -53,5 +55,29 @@ public class TestService {
     }
 
     return answersAsString;
+  }
+
+  public void showTestNames(String path){
+    List<String> fileNames = getTestNames(path);
+    String namesAsString = "";
+    for (String name : fileNames) {
+      namesAsString = namesAsString + name + "\n";
+    }
+    System.out.print(namesAsString);
+  }
+
+  private List<String> getTestNames(String path) {
+    File folder = new File(path);
+    File[] listOfFiles = folder.listFiles();
+    List<String> fileNames = new ArrayList<>();
+    if (listOfFiles == null) {
+    }
+    for (File file : listOfFiles) {
+      if (file.isFile()) {
+        fileNames.add(file.getName());
+      }
+    }
+
+    return fileNames;
   }
 }

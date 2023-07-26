@@ -33,7 +33,7 @@ class AppServiceTest {
     String data = "1";
     InputStream stdin = System.in;
     System.setIn(new ByteArrayInputStream(data.getBytes()));
-    appService.launch();
+    appService.launchTests();
     System.setIn(stdin);
 
     verify(csvProcessor).getTests(any());

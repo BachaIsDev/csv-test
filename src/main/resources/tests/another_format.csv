@@ -1,3 +1,5 @@
 question,firstAnswer,secondAnswer,thirdAnswer
-second,right,notRight,oneMoreWrong
-This program was write on...,Java,C++
+second question,right,notRight,oneMoreWrong
+This program was write on...,Java,C++,Python,Fortran,Scala,Kotlin
+What planet is the largest?,Saturn,Earth,Mercury,Uranus
+Most biggest country in the world,Russia,USA,Brazil,China,Canada,Australia

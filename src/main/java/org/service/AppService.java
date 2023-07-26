@@ -1,7 +1,5 @@
 package org.service;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.entity.Result;
@@ -22,11 +20,11 @@ public class AppService {
     this.directoryHandler = directoryHandler;
   }
 
-  public void launch() {
+  public void launchTests() {
     String fileName = "";
     System.out.println("Select a test: ");
-    loadTestNames(RESOURCE_PATH);
-    loadTestNames(directoryHandler.getBasePath());
+    testService.showTestNames(RESOURCE_PATH);
+    testService.showTestNames(directoryHandler.getBasePath());
 
     Scanner scanner = new Scanner(System.in);
 
@@ -51,29 +49,4 @@ public class AppService {
 
     result.getResult();
   }
-
-  private List<String> getTestNames(String path) {
-    File folder = new File(path);
-    File[] listOfFiles = folder.listFiles();
-    List<String> fileNames = new ArrayList<>();
-    if (listOfFiles == null) {
-    }
-    for (File file : listOfFiles) {
-      if (file.isFile()) {
-        fileNames.add(file.getName());
-      }
-    }
-
-    return fileNames;
-  }
-
-  private void loadTestNames(String path){
-    List<String> fileNames = getTestNames(path);
-    String namesAsString = "";
-    for (String name : fileNames) {
-      namesAsString = namesAsString + name + "\n";
-    }
-    System.out.print(namesAsString);
-  }
-
 }

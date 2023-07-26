@@ -11,7 +11,7 @@ public class Launcher {
   }
 
   public void launch(){
-    appService.launch();
+    appService.launchTests();
   }
 
 }
