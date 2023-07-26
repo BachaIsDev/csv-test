@@ -1,4 +1,4 @@
-package org.main;
+package org;
 
 import java.io.IOException;
 import java.io.Reader;
