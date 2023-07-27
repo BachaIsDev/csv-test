@@ -1,5 +1,5 @@
-question,firstAnswer,secondAnswer,thirdAnswer
-second question,right,notRight,oneMoreWrong
-This program was write on...,Java,C++,Python,Fortran,Scala,Kotlin
-What planet is the largest?,Saturn,Earth,Mercury,Uranus
-Most biggest country in the world,Russia,USA,Brazil,China,Canada,Australia
+question,"[""firstAnswer"", ""secondAnswer"", "thirdAnswer"]"
+second question,"[""Right"", ""Not right"", ""One more wrong""]"
+This program was write on...,"[""firstAnswer"", ""secondAnswer"", "" "","" "","" "","" "","" ""]"
+What planet is the largest?,"[""firstAnswer"", ""secondAnswer"","" "","" "","" ""]"
+Most biggest country in the world,"[""firstAnswer"", ""secondAnswer"","" "","" "","" ""]"

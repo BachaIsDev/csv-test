@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
-  <artifactId>csv-testEntity</artifactId>
+  <artifactId>csv-question</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>csv-testEntity</name>
+  <name>csv-question</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,47 +23,37 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>testEntity</scope>
+      <scope>question</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>testEntity</scope>
+      <scope>question</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>testEntity</scope>
+      <scope>question</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>testEntity</scope>
+      <scope>question</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>testEntity</scope>
+      <scope>question</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <version>5.3.1</version>
-      <scope>testEntity</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>${org.springframework.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-      <version>${org.springframework.version}</version>
+      <scope>question</scope>
     </dependency>
     <dependency>
       <groupId>com.opencsv</groupId>
@@ -71,20 +61,14 @@
       <version>5.7.1</version>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.14.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-orm</artifactId>
+      <artifactId>spring-context</artifactId>
       <version>${org.springframework.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-jpa</artifactId>
-      <version>2.7.13</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>6.1.5.Final</version>
-      <type>pom</type>
     </dependency>
   </dependencies>
 

@@ -3,27 +3,29 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="csvProcessor" class="org.repo.CsvProcessor">
+  <bean id="testRepositoryImpl" class="org.main.repo.impl.TestRepositoryImpl">
   </bean>
 
-  <bean id="testService" class="org.service.TestService">
+  <bean id="testServiceImpl" class="org.main.service.impl.TestServiceImpl">
+    <constructor-arg ref="ioService"/>
+    <constructor-arg ref="pathProvider"/>
   </bean>
 
-  <bean id="directoryHandler" class="org.util.DirectoryHandler">
-    <property name="basePath" value="${application.path}"/>
+  <bean id="pathProvider" class="org.main.util.PathProvider">
+    <constructor-arg name="basePath" value="${application.path}"/>
   </bean>
 
-  <bean id="appService" class="org.service.AppService">
-    <constructor-arg ref="csvProcessor"/>
-    <constructor-arg ref="testService"/>
-    <constructor-arg ref="directoryHandler"/>
+  <bean id="ioService" class="org.main.service.impl.IOServiceImpl">
+    <constructor-arg ref="pathProvider"/>
   </bean>
 
-  <bean id="launcher" class="org.launcher.Launcher">
-    <constructor-arg ref="appService"/>
+  <bean id="appService" class="org.main.service.AppService">
+    <constructor-arg ref="testRepositoryImpl"/>
+    <constructor-arg ref="testServiceImpl"/>
+    <constructor-arg ref="ioService"/>
   </bean>
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
     <property name="locations">
       <value>application.properties</value>
     </property>
