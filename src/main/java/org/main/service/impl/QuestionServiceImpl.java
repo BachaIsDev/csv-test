@@ -11,17 +11,16 @@ public class QuestionServiceImpl implements QuestionService {
   private final IOService ioService;
   private final QuestionRepository questionRepository;
 
-  public QuestionServiceImpl(IOServiceImpl ioService, QuestionRepository questionRepository) {
+  public QuestionServiceImpl(IOService ioService, QuestionRepository questionRepository) {
     this.ioService = ioService;
     this.questionRepository = questionRepository;
   }
 
-  public List<Question> getQuestions() {
+  public List<Question> getQuestions(String testName) {
     List<Question> questions = null;
     try {
       ioService.printText("Enter the name of the test: ");
       questionRepository.getTestNames().forEach(ioService::printText);
-      String testName = ioService.nextString();
       questions = questionRepository.findQuestionsByName(testName);
     } catch (TestReadingException e) {
       ioService.printText("There is no such test");

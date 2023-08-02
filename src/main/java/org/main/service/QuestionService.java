@@ -6,6 +6,6 @@ import org.main.entity.Result;
 
 public interface QuestionService {
 
-  List<Question> getQuestions();
+  List<Question> getQuestions(String testName);
 
 }
