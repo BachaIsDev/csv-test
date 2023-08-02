@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.main.entity.Question;
-import org.main.exception.TestException;
+import org.main.exception.TestReadingException;
 import org.main.repo.QuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,13 +29,13 @@ class AppServiceTest {
 
 
   @Test
-  void launch_shouldCallProcessTestFromCsv_whenSystemInIs1() throws TestException {
+  void launch_shouldCallProcessTestFromCsv_whenSystemInIs1() throws TestReadingException {
     String data = "1";
     InputStream stdin = System.in;
     System.setIn(new ByteArrayInputStream(data.getBytes()));
     appService.launchTest();
     System.setIn(stdin);
 
-    verify(questionRepository).getQuestions(any());
+    verify(questionRepository).findQuestionsByName(any());
   }
 }

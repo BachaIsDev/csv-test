@@ -3,7 +3,7 @@ package org.main.entity;
 public class Question {
 
   private String issue;
-  private Option option = new Option();
+  private OptionCatalogue optionCatalogue = new OptionCatalogue();
 
   public String getIssue() {
     return issue;
@@ -13,7 +13,7 @@ public class Question {
     this.issue = issue;
   }
 
-  public Option getOption() {
-    return option;
+  public OptionCatalogue getOption() {
+    return optionCatalogue;
   }
 }

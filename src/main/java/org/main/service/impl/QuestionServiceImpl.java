@@ -2,7 +2,7 @@ package org.main.service.impl;
 
 import java.util.List;
 import org.main.entity.Question;
-import org.main.exception.TestException;
+import org.main.exception.TestReadingException;
 import org.main.repo.QuestionRepository;
 import org.main.service.IOService;
 import org.main.service.QuestionService;
@@ -21,13 +21,13 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   public List<Question> getQuestions() {
-    ioService.printText("Enter the name of the test: ");
-    pathProvider.getAllTestNames().forEach(ioService::printText);
-    String testName = ioService.nextString();
     List<Question> questions = null;
     try {
-      questions = questionRepository.getQuestions(pathProvider.getPath(testName));
-    } catch (TestException e) {
+      ioService.printText("Enter the name of the test: ");
+      pathProvider.getAllTestNames().forEach(ioService::printText);
+      String testName = ioService.nextString();
+      questions = questionRepository.findQuestionsByName(pathProvider.getPath(testName));
+    } catch (TestReadingException e) {
       ioService.printText("There is no such test");
     }
 

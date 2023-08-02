@@ -2,31 +2,37 @@ package org.main.repo.impl;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.main.entity.Question;
 import org.main.entity.dto.QuestionDTO;
-import org.main.exception.TestException;
+import org.main.exception.TestReadingException;
 import org.main.repo.QuestionRepository;
-import org.main.util.PathProvider;
-import org.springframework.stereotype.Repository;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
 
-  public QuestionRepositoryImpl() {
-
+  @Override
+  public List<Question> findQuestionsByName(String testName) throws TestReadingException {
+    if(testName.startsWith("tests")){
+      return getQuestionsFromResources(testName);
+    }else {
+      return getQuestionsFromExternal(testName);
+    }
   }
 
-
-  @Override
-  public List<Question> getQuestions(String testName) throws TestException {
+  public List<Question> getQuestionsFromResources(String fileName) throws TestReadingException {
+    ClassLoader classLoader = getClass().getClassLoader();
     List<QuestionDTO> result;
-    try (Reader reader = new FileReader(testName) {
-    }) {
+    try (InputStream inputStream = classLoader.getResourceAsStream("tests/another_format.csv");
+        InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(streamReader)) {
       CsvToBean<QuestionDTO> csvReader = new CsvToBeanBuilder<QuestionDTO>(reader)
           .withType(QuestionDTO.class)
           .withSeparator(',')
@@ -37,27 +43,45 @@ public class QuestionRepositoryImpl implements QuestionRepository {
       result = csvReader.parse();
 
     } catch (IOException e) {
-      throw new TestException("Wrong input", e);
+      throw new TestReadingException("Wrong input", e);
     }
 
     return dtoToEntity(result);
   }
 
-  private List<Question> dtoToEntity(List<QuestionDTO> dtoList) {
-    List<Question> questionList = new ArrayList<>();
-    if(dtoList.isEmpty()){
-      System.out.println("File is empty");
-      return questionList;
+  public List<Question> getQuestionsFromExternal(String fileName) throws TestReadingException {
+    List<QuestionDTO> result;
+    try (Reader reader = new FileReader(fileName)) {
+      CsvToBean<QuestionDTO> csvReader = new CsvToBeanBuilder<QuestionDTO>(reader)
+          .withType(QuestionDTO.class)
+          .withSeparator(',')
+          .withIgnoreLeadingWhiteSpace(true)
+          .withIgnoreEmptyLine(true)
+          .build();
+
+      result = csvReader.parse();
+
+    } catch (IOException e) {
+      throw new TestReadingException("Wrong input", e);
     }
 
-    for (QuestionDTO questionDTO : dtoList) {
-      Question question = new Question();
-      question.setIssue(questionDTO.getIssue());
-      question.getOption().getOptions().put(questionDTO.getOptions().get(0), true);
-      for (int i = 1; i < questionDTO.getOptions().size(); i++) {
-        question.getOption().getOptions().put(questionDTO.getOptions().get(i), false);
+    return dtoToEntity(result);
+  }
+
+  private List<Question> dtoToEntity(List<QuestionDTO> dtoList) throws TestReadingException {
+    List<Question> questionList = new ArrayList<>();
+    try{
+      for (QuestionDTO questionDTO : dtoList) {
+        Question question = new Question();
+        question.setIssue(questionDTO.getIssue());
+        question.getOption().getOptions().put(questionDTO.getOptions().get(0), true);
+        for (int i = 1; i < questionDTO.getOptions().size(); i++) {
+          question.getOption().getOptions().put(questionDTO.getOptions().get(i), false);
+        }
+        questionList.add(question);
       }
-      questionList.add(question);
+    }catch (ArrayIndexOutOfBoundsException e){
+      throw new TestReadingException("Can't convert DTO to Object", e);
     }
 
     return questionList;

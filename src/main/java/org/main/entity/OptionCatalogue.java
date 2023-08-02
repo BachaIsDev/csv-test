@@ -3,7 +3,7 @@ package org.main.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Option {
+public class OptionCatalogue {
 
   private Map<String, Boolean> options = new HashMap<>();
 

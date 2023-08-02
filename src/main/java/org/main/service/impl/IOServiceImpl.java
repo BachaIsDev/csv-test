@@ -1,13 +1,7 @@
 package org.main.service.impl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import org.main.entity.Question;
-import org.main.entity.Result;
 import org.main.service.IOService;
-import org.main.util.PathProvider;
 
 public class IOServiceImpl implements IOService {
 
