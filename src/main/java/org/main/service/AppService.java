@@ -4,6 +4,7 @@ import java.util.List;
 import org.main.entity.Question;
 
 public class AppService {
+
   private final TestService testService;
   private final QuestionService questionService;
   private final IOService ioService;
@@ -24,6 +25,6 @@ public class AppService {
     }
 
     testService.startTest(questionList);
-
   }
+
 }

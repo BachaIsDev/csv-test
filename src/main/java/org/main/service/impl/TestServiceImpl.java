@@ -7,6 +7,7 @@ import org.main.service.IOService;
 import org.main.service.TestService;
 
 public class TestServiceImpl implements TestService {
+
   private final IOService ioService;
 
   public TestServiceImpl(IOServiceImpl ioService) {
@@ -14,21 +15,22 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
-  public void startTest(List<Question> testList){
+  public void startTest(List<Question> testList) {
     ioService.printText("Answer correctly as many questions as possible. Good Luck!");
     Result result = new Result(0, testList.size());
-    for(Question test: testList){
+    for (Question test : testList) {
       boolean rightAnswer = processTest(test);
-      if(rightAnswer){
+      if (rightAnswer) {
         result.setRightAnswers(result.getRightAnswers() + 1);
       }
     }
 
-    ioService.printText(((double) result.getRightAnswers() / (double) result.getTotalAnswers()) * 100
-        + "% correctly");
+    ioService.printText(
+        ((double) result.getRightAnswers() / (double) result.getTotalAnswers()) * 100
+            + "% correctly");
   }
 
-  private boolean processTest(Question question){
+  private boolean processTest(Question question) {
     Boolean isCorrect;
     String answersAsString = getAnswersAsString(question);
     ioService.printText(question.getIssue());
@@ -36,16 +38,16 @@ public class TestServiceImpl implements TestService {
     ioService.printText(answersAsString);
     ioService.printText("Enter an answer: ");
 
-    do{
+    do {
       isCorrect = false;
       String option = ioService.nextString();
-      if(option != null){
+      if (option != null) {
         isCorrect = question.getOption().getOptions().getOrDefault(option, null);
-        if(isCorrect == null){
+        if (isCorrect == null) {
           ioService.printText("There is no such option. Please, try again");
         }
       }
-    }while (isCorrect == null);
+    } while (isCorrect == null);
 
     return isCorrect;
   }

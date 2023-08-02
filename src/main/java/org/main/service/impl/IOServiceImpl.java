@@ -5,15 +5,18 @@ import org.main.service.IOService;
 
 public class IOServiceImpl implements IOService {
 
-  public IOServiceImpl() { }
+  public IOServiceImpl() {
+  }
 
   @Override
-  public void printText(String text){
+  public void printText(String text) {
     System.out.println(text);
-  };
+  }
+
+  ;
 
   @Override
-  public String nextString(){
+  public String nextString() {
     String fileName = "";
     Scanner scanner = new Scanner(System.in);
 
