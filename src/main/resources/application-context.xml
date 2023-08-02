@@ -26,6 +26,7 @@
   <bean id="appService" class="org.main.service.AppService">
     <constructor-arg ref="testService"/>
     <constructor-arg ref="questionService"/>
+    <constructor-arg ref="ioService"/>
   </bean>
 
   <bean id="conversionService"
