@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.main.entity.Question;
 import org.main.exception.TestException;
-import org.main.repo.TestRepository;
+import org.main.repo.QuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,9 +19,9 @@ class AppServiceTest {
   @InjectMocks
   private AppService appService;
   @Mock
-  private TestRepository testRepository;
+  private QuestionRepository questionRepository;
   @Mock
-  private TestService testService;
+  private QuestionService questionService;
   @Mock
   private IOService ioService;
   @Mock
@@ -36,6 +36,6 @@ class AppServiceTest {
     appService.launchTest();
     System.setIn(stdin);
 
-    verify(testRepository).getQuestions(any());
+    verify(questionRepository).getQuestions(any());
   }
 }

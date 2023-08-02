@@ -3,26 +3,33 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="testRepositoryImpl" class="org.main.repo.impl.TestRepositoryImpl">
+  <bean id="questionRepository" class="org.main.repo.impl.QuestionRepositoryImpl">
   </bean>
 
-  <bean id="testServiceImpl" class="org.main.service.impl.TestServiceImpl">
+  <bean id="testService" class="org.main.service.impl.TestServiceImpl">
+    <constructor-arg ref="ioService"/>
+  </bean>
+
+  <bean id="questionService" class="org.main.service.impl.QuestionServiceImpl">
     <constructor-arg ref="ioService"/>
     <constructor-arg ref="pathProvider"/>
+    <constructor-arg ref="questionRepository"/>
   </bean>
 
   <bean id="pathProvider" class="org.main.util.PathProvider">
-    <constructor-arg name="basePath" value="${application.path}"/>
+    <constructor-arg name="basePaths" value="${application.path}"/>
   </bean>
 
   <bean id="ioService" class="org.main.service.impl.IOServiceImpl">
-    <constructor-arg ref="pathProvider"/>
   </bean>
 
   <bean id="appService" class="org.main.service.AppService">
-    <constructor-arg ref="testRepositoryImpl"/>
-    <constructor-arg ref="testServiceImpl"/>
-    <constructor-arg ref="ioService"/>
+    <constructor-arg ref="testService"/>
+    <constructor-arg ref="questionService"/>
+  </bean>
+
+  <bean id="conversionService"
+    class="org.springframework.context.support.ConversionServiceFactoryBean">
   </bean>
 
   <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">

@@ -1,11 +1,11 @@
 package org.main.service;
 
+import java.util.List;
 import org.main.entity.Question;
 import org.main.entity.Result;
 
-public interface IOService {
+public interface QuestionService {
 
-  void printText(String text);
+  List<Question> getQuestions();
 
-  String nextString();
 }

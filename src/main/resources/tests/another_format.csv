@@ -1,5 +1,5 @@
 question,"[""firstAnswer"", ""secondAnswer"", "thirdAnswer"]"
 second question,"[""Right"", ""Not right"", ""One more wrong""]"
-This program was write on...,"[""firstAnswer"", ""secondAnswer"", "" "","" "","" "","" "","" ""]"
-What planet is the largest?,"[""firstAnswer"", ""secondAnswer"","" "","" "","" ""]"
-Most biggest country in the world,"[""firstAnswer"", ""secondAnswer"","" "","" "","" ""]"
+This program was write on...,"[""Java"", ""C++"", ""Python"",""Fortran"",""Assembler"",""C#"",""MathLab""]"
+What planet is the largest?,"[""Saturn"", ""Uranus"",""Mercury"",""Earth"",""Mars""]"
+Most biggest country in the world,"[""Russia"", ""USA"",""Egypt"",""Canada"",""China""]"

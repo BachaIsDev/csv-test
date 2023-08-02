@@ -1,35 +1,27 @@
 package org.main.service;
 
 import java.util.List;
-import org.main.exception.TestException;
-import org.main.repo.TestRepository;
 import org.main.entity.Result;
 import org.main.entity.Question;
 
 public class AppService {
-  private final TestRepository testRepository;
   private final TestService testService;
-  private final IOService ioService;
+  private final QuestionService questionService;
 
-  public AppService(TestRepository testRepository, TestService testService, IOService ioService) {
-    this.testRepository = testRepository;
+  public AppService(TestService testService, QuestionService questionService) {
     this.testService = testService;
-    this.ioService = ioService;
+    this.questionService = questionService;
   }
 
   public void launchTest() {
-
     List<Question> questionList = null;
-    try {
-      questionList = testRepository.getQuestions(testService.getTestPath(ioService.askFileName()));
-      if(questionList.isEmpty()){
-        return;
-      }
-    } catch (TestException e) {
-      System.out.println("Format of question is wrong!");;
-    }
-    Result result = testService.startTest(questionList);
+    questionList = questionService.getQuestions();
 
-    ioService.getResult(result);
+    if (questionList == null || questionList.isEmpty()) {
+      return;
+    }
+
+    testService.startTest(questionList);
+
   }
 }

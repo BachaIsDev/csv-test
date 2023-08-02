@@ -1,37 +1,62 @@
 package org.main.service.impl;
 
 import java.util.List;
-import org.main.entity.Result;
 import org.main.entity.Question;
+import org.main.entity.Result;
+import org.main.service.IOService;
 import org.main.service.TestService;
-import org.main.util.PathProvider;
 
 public class TestServiceImpl implements TestService {
-  private final IOServiceImpl ioServiceImpl;
-  private final PathProvider pathProvider;
+  private final IOService ioService;
 
-  public TestServiceImpl(IOServiceImpl ioServiceImpl, PathProvider pathProvider) {
-    this.ioServiceImpl = ioServiceImpl;
-    this.pathProvider = pathProvider;
+  public TestServiceImpl(IOServiceImpl ioService) {
+    this.ioService = ioService;
   }
 
   @Override
-  public Result startTest(List<Question> testList){
-    ioServiceImpl.greetings();
+  public void startTest(List<Question> testList){
+    ioService.printText("Answer correctly as many questions as possible. Good Luck!");
     Result result = new Result(0, testList.size());
     for(Question test: testList){
-      boolean rightAnswer = ioServiceImpl.askQuestion(test);
+      boolean rightAnswer = processTest(test);
       if(rightAnswer){
         result.setRightAnswers(result.getRightAnswers() + 1);
       }
     }
 
-    return result;
+    ioService.printText(((double) result.getRightAnswers() / (double) result.getTotalAnswers()) * 100
+        + "% correctly");
   }
 
-  @Override
-  public String getTestPath(String fileName){
-    return pathProvider.getPath(fileName);
+  private boolean processTest(Question question){
+    Boolean isCorrect;
+    String answersAsString = getAnswersAsString(question);
+    ioService.printText(question.getIssue());
+    ioService.printText("Answers:");
+    ioService.printText(answersAsString);
+    ioService.printText("Enter an answer: ");
+
+    do{
+      isCorrect = false;
+      String option = ioService.nextString();
+      if(option != null){
+        isCorrect = question.getOption().getOptions().getOrDefault(option, null);
+        if(isCorrect == null){
+          ioService.printText("There is no such option. Please, try again");
+        }
+      }
+    }while (isCorrect == null);
+
+    return isCorrect;
+  }
+
+  private String getAnswersAsString(Question question) {
+    String answersAsString = "";
+    for (String answer : question.getOption().getOptions().keySet()) {
+      answersAsString = answersAsString + answer + "\n";
+    }
+
+    return answersAsString;
   }
 
 }

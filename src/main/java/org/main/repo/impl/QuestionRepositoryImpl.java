@@ -2,23 +2,31 @@ package org.main.repo.impl;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.main.entity.Question;
 import org.main.entity.dto.QuestionDTO;
 import org.main.exception.TestException;
-import org.main.repo.TestRepository;
+import org.main.repo.QuestionRepository;
+import org.main.util.PathProvider;
+import org.springframework.stereotype.Repository;
+
+public class QuestionRepositoryImpl implements QuestionRepository {
+
+  public QuestionRepositoryImpl() {
+
+  }
 
 
-public class TestRepositoryImpl implements TestRepository {
   @Override
-  public List<Question> getQuestions(String filePath) throws TestException {
+  public List<Question> getQuestions(String testName) throws TestException {
     List<QuestionDTO> result;
-    try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
+    try (Reader reader = new FileReader(testName) {
+    }) {
       CsvToBean<QuestionDTO> csvReader = new CsvToBeanBuilder<QuestionDTO>(reader)
           .withType(QuestionDTO.class)
           .withSeparator(',')
@@ -54,4 +62,5 @@ public class TestRepositoryImpl implements TestRepository {
 
     return questionList;
   }
+
 }
