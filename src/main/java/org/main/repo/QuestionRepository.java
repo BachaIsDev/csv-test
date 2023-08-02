@@ -7,4 +7,6 @@ import org.main.exception.TestReadingException;
 public interface QuestionRepository {
   List<Question> findQuestionsByName(String name) throws TestReadingException;
 
+  List<String> getTestNames() throws TestReadingException;
+
 }

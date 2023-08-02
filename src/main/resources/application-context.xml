@@ -4,6 +4,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="questionRepository" class="org.main.repo.impl.QuestionRepositoryImpl">
+    <constructor-arg ref="pathProvider"/>
   </bean>
 
   <bean id="testService" class="org.main.service.impl.TestServiceImpl">
@@ -12,7 +13,6 @@
 
   <bean id="questionService" class="org.main.service.impl.QuestionServiceImpl">
     <constructor-arg ref="ioService"/>
-    <constructor-arg ref="pathProvider"/>
     <constructor-arg ref="questionRepository"/>
   </bean>
 

@@ -6,17 +6,13 @@ import org.main.exception.TestReadingException;
 import org.main.repo.QuestionRepository;
 import org.main.service.IOService;
 import org.main.service.QuestionService;
-import org.main.util.PathProvider;
 
 public class QuestionServiceImpl implements QuestionService {
   private final IOService ioService;
-  private final PathProvider pathProvider;
   private final QuestionRepository questionRepository;
 
-  public QuestionServiceImpl(IOServiceImpl ioService, PathProvider pathProvider,
-      QuestionRepository questionRepository) {
+  public QuestionServiceImpl(IOServiceImpl ioService, QuestionRepository questionRepository) {
     this.ioService = ioService;
-    this.pathProvider = pathProvider;
     this.questionRepository = questionRepository;
   }
 
@@ -24,9 +20,9 @@ public class QuestionServiceImpl implements QuestionService {
     List<Question> questions = null;
     try {
       ioService.printText("Enter the name of the test: ");
-      pathProvider.getAllTestNames().forEach(ioService::printText);
+      questionRepository.getTestNames().forEach(ioService::printText);
       String testName = ioService.nextString();
-      questions = questionRepository.findQuestionsByName(pathProvider.getPath(testName));
+      questions = questionRepository.findQuestionsByName(testName);
     } catch (TestReadingException e) {
       ioService.printText("There is no such test");
     }

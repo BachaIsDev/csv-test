@@ -15,22 +15,35 @@ import org.main.entity.Question;
 import org.main.entity.dto.QuestionDTO;
 import org.main.exception.TestReadingException;
 import org.main.repo.QuestionRepository;
+import org.main.util.PathProvider;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
 
+  private final PathProvider pathProvider;
+
+  public QuestionRepositoryImpl(PathProvider pathProvider) {
+    this.pathProvider = pathProvider;
+  }
+
   @Override
   public List<Question> findQuestionsByName(String testName) throws TestReadingException {
-    if(testName.startsWith("tests")){
-      return getQuestionsFromResources(testName);
+    String path = pathProvider.getPath(testName);
+    if(path.startsWith("tests")){
+      return getQuestionsFromResources(path);
     }else {
-      return getQuestionsFromExternal(testName);
+      return getQuestionsFromExternal(path);
     }
   }
 
-  public List<Question> getQuestionsFromResources(String fileName) throws TestReadingException {
+  @Override
+  public List<String> getTestNames() throws TestReadingException {
+    return pathProvider.getAllTestNames();
+  }
+
+  private List<Question> getQuestionsFromResources(String testName) throws TestReadingException {
     ClassLoader classLoader = getClass().getClassLoader();
     List<QuestionDTO> result;
-    try (InputStream inputStream = classLoader.getResourceAsStream("tests/another_format.csv");
+    try (InputStream inputStream = classLoader.getResourceAsStream("tests/" + testName);
         InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(streamReader)) {
       CsvToBean<QuestionDTO> csvReader = new CsvToBeanBuilder<QuestionDTO>(reader)
@@ -49,9 +62,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     return dtoToEntity(result);
   }
 
-  public List<Question> getQuestionsFromExternal(String fileName) throws TestReadingException {
+  private List<Question> getQuestionsFromExternal(String path) throws TestReadingException {
     List<QuestionDTO> result;
-    try (Reader reader = new FileReader(fileName)) {
+    try (Reader reader = new FileReader(path)) {
       CsvToBean<QuestionDTO> csvReader = new CsvToBeanBuilder<QuestionDTO>(reader)
           .withType(QuestionDTO.class)
           .withSeparator(',')
