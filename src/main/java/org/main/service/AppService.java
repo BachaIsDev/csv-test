@@ -17,6 +17,8 @@ public class AppService {
 
   public void launchTest() {
     List<Question> questionList = null;
+    ioService.printText("Enter the name of the test: ");
+    questionService.getTestNames().forEach(ioService::printText);
     String testName = ioService.nextString();
     questionList = questionService.getQuestions(testName);
 
@@ -26,5 +28,7 @@ public class AppService {
 
     testService.startTest(questionList);
   }
+
+
 
 }

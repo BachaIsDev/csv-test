@@ -1,5 +1,6 @@
 package org.main.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.main.entity.Question;
 import org.main.exception.TestReadingException;
@@ -20,14 +21,23 @@ public class QuestionServiceImpl implements QuestionService {
   public List<Question> getQuestions(String testName) {
     List<Question> questions = null;
     try {
-      ioService.printText("Enter the name of the test: ");
-      questionRepository.getTestNames().forEach(ioService::printText);
       questions = questionRepository.findQuestionsByName(testName);
     } catch (TestReadingException e) {
       ioService.printText("There is no such test");
     }
 
     return questions;
+  }
+
+  @Override
+  public List<String> getTestNames(){
+    List<String> result = new ArrayList<>();
+    try {
+      result = questionRepository.getTestNames();
+    }catch (TestReadingException e) {
+      ioService.printText("There is no such test");
+    }
+    return result;
   }
 
 }

@@ -8,4 +8,6 @@ public interface QuestionService {
 
   List<Question> getQuestions(String testName);
 
+  List<String> getTestNames();
+
 }

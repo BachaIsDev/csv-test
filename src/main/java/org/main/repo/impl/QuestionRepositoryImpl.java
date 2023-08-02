@@ -43,7 +43,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   private List<Question> getQuestionsFromResources(String testName) throws TestReadingException {
     ClassLoader classLoader = getClass().getClassLoader();
     List<QuestionDTO> result;
-    try (InputStream inputStream = classLoader.getResourceAsStream("tests/" + testName);
+    try (InputStream inputStream = classLoader.getResourceAsStream(testName);
         InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(streamReader)) {
       CsvToBean<QuestionDTO> csvReader = new CsvToBeanBuilder<QuestionDTO>(reader)
