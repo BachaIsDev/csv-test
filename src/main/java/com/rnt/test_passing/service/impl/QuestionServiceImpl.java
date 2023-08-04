@@ -10,11 +10,9 @@ import com.rnt.test_passing.service.IOService;
 
 public class QuestionServiceImpl implements QuestionService {
 
-  private final IOService ioService;
   private final QuestionRepository questionRepository;
 
-  public QuestionServiceImpl(IOService ioService, QuestionRepository questionRepository) {
-    this.ioService = ioService;
+  public QuestionServiceImpl(QuestionRepository questionRepository) {
     this.questionRepository = questionRepository;
   }
 
@@ -24,7 +22,7 @@ public class QuestionServiceImpl implements QuestionService {
     try {
       questions = questionRepository.findQuestionsByName(testName);
     } catch (TestReadingException e) {
-      ioService.printText("There is no such test");
+      throw new TestReadingException("No such test", e);
     }
 
     return questions;

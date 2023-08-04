@@ -1,6 +1,7 @@
 package com.rnt.test_passing.service;
 
 import com.rnt.test_passing.entity.Question;
+import com.rnt.test_passing.exception.TestReadingException;
 import java.util.List;
 
 public class AppService {
@@ -24,7 +25,11 @@ public class AppService {
     String testName = ioService.readText();
 
     List<Question> questionList = null;
-    questionList = questionService.getQuestions(testName);
+    try {
+      questionList = questionService.getQuestions(testName);
+    } catch (TestReadingException e){
+      ioService.printText("There is no such test");
+    }
 
     if (questionList == null || questionList.isEmpty()) {
       return;

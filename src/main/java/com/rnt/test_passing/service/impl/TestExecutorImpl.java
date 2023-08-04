@@ -24,9 +24,7 @@ public class TestExecutorImpl implements TestExecutor {
     Result result = new Result(0, questions.size());
     for (Question question : questions) {
       boolean rightAnswer = processTest(question);
-      if (rightAnswer) {
-        result.increaseAmountOfRightAnswers(1);
-      }
+      result.applyAnswer(rightAnswer);
     }
 
     showResult(result);
@@ -34,11 +32,7 @@ public class TestExecutorImpl implements TestExecutor {
 
   private boolean processTest(Question question) {
     Boolean isCorrect;
-    String answersAsString = converter.getAnswerAsString(question);
-    ioService.printText(question.getIssue());
-    ioService.printText("Answers:");
-    ioService.printText(answersAsString);
-    ioService.printText("Enter an answer: ");
+    showQuestion(question);
 
     do {
       isCorrect = false;
@@ -70,6 +64,14 @@ public class TestExecutorImpl implements TestExecutor {
     ioService.printText(
         ((double) result.getRightAnswers() / (double) result.getTotalAnswers()) * 100
             + "% correctly");
+  }
+
+  private void showQuestion(Question question){
+    String answersAsString = converter.getAnswersAsString(question);
+    ioService.printText(question.getIssue());
+    ioService.printText("Answers:");
+    ioService.printText(answersAsString);
+    ioService.printText("Enter an answer: ");
   }
 
 }

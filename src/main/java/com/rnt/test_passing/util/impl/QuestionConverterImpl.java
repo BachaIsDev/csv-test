@@ -8,7 +8,7 @@ import com.rnt.test_passing.util.QuestionConverter;
 public class QuestionConverterImpl implements QuestionConverter {
 
   @Override
-  public String getAnswerAsString(Question question) {
+  public String getAnswersAsString(Question question) {
     String answersAsString = "";
     List<String> optionsAsStrings = question.getOptions().stream().map(Option::getText).toList();
     for (String answer : optionsAsStrings) {

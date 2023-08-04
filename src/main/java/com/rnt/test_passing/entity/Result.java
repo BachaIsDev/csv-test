@@ -25,8 +25,10 @@ public class Result {
     this.totalAnswers = totalAnswers;
   }
 
-  public void increaseAmountOfRightAnswers(int amount){
-    this.rightAnswers = this.rightAnswers + amount;
+  public void applyAnswer(boolean isRight){
+    if(isRight){
+      this.rightAnswers++;
+    }
   }
 
 }

@@ -25,7 +25,7 @@ class QuestionServiceImplTest {
   void getQuestions_shouldCallRepo() throws TestReadingException {
     QuestionRepository questionRepository = mock(QuestionRepository.class);
     IOService ioService = new IOServiceImpl();
-    QuestionService questionService = new QuestionServiceImpl(ioService, questionRepository);
+    QuestionService questionService = new QuestionServiceImpl(questionRepository);
     Question question1 = new Question("issue1", List.of(mock(Option.class)));
     Question question2 = new Question("issue2", List.of(mock(Option.class)));
     List<Question> questions = List.of(question1, question2);

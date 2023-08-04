@@ -22,7 +22,6 @@
   </bean>
 
   <bean id="questionService" class="com.rnt.test_passing.service.impl.QuestionServiceImpl">
-    <constructor-arg ref="ioService"/>
     <constructor-arg ref="questionRepository"/>
   </bean>
 

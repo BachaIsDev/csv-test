@@ -18,14 +18,14 @@ public class IOServiceImpl implements IOService {
 
   @Override
   public String readText() {
-    String fileName = null;
+    String text = null;
     try {
-      fileName = reader.readLine();
+      text = reader.readLine();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
-    return fileName;
+    return text;
   }
 
 }
