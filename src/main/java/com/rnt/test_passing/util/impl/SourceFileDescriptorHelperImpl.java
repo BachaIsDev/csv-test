@@ -124,16 +124,4 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
     return fileNames;
   }
-
-  private InputStream getFileFromResourceAsStream(String fileName) {
-
-    ClassLoader classLoader = getClass().getClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream(fileName);
-
-    if(isNull(inputStream)){
-      return null;
-    }
-
-    return inputStream;
-  }
 }
