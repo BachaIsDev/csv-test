@@ -1,7 +1,5 @@
 package com.rnt.test_passing.util.impl;
 
-import static java.util.Objects.isNull;
-
 import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
 import com.rnt.test_passing.util.SourceFileDescriptorHelper;
@@ -10,14 +8,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
