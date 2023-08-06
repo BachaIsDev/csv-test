@@ -25,10 +25,16 @@
     <constructor-arg ref="questionRepository"/>
   </bean>
 
-  <bean id="questionConverter" class="com.rnt.test_passing.util.impl.QuestionConverterImpl">
+  <bean id="questionConverter" class="com.rnt.test_passing.util.impl.QuestionConverter">
+  </bean>
+
+  <bean id="scanner" class="java.util.Scanner">
+    <constructor-arg value="#{T(java.lang.System).in}"/>
   </bean>
 
   <bean id="ioService" class="com.rnt.test_passing.service.impl.IOServiceImpl">
+    <constructor-arg name="printStream" value="#{T(java.lang.System).out}"/>
+    <constructor-arg ref="scanner"/>
   </bean>
 
   <bean id="appService" class="com.rnt.test_passing.service.AppService">

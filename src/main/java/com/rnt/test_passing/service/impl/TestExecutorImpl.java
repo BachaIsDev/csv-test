@@ -1,19 +1,19 @@
 package com.rnt.test_passing.service.impl;
 
 import com.rnt.test_passing.service.TestExecutor;
+import com.rnt.test_passing.util.impl.QuestionConverter;
 import java.util.List;
-import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.Result;
 import com.rnt.test_passing.service.IOService;
-import com.rnt.test_passing.util.QuestionConverter;
+import java.util.stream.Collectors;
 
 public class TestExecutorImpl implements TestExecutor {
 
   private final IOService ioService;
   private final QuestionConverter converter;
 
-  public TestExecutorImpl(IOServiceImpl ioService, QuestionConverter converter) {
+  public TestExecutorImpl(IOService ioService, QuestionConverter converter) {
     this.ioService = ioService;
     this.converter = converter;
   }
@@ -31,33 +31,19 @@ public class TestExecutorImpl implements TestExecutor {
   }
 
   private boolean processTest(Question question) {
-    Boolean isCorrect;
-    showQuestion(question);
+    List<String> optionList = showQuestion(question);
+    int rightAnswerIndex = 0;
 
-    do {
-      isCorrect = false;
-      String option = ioService.readText();
-      if (option != null) {
-        List<String> options = question.getOptions().stream().map(Option::getText).toList();
-
-        if (options.contains(option)) {
-          for (Option opt : question.getOptions()) {
-            if (opt.isCorrect() && opt.getText().equals(option)) {
-              isCorrect = true;
-              break;
-            }
-          }
-        } else {
-          isCorrect = null;
-        }
-
-        if (isCorrect == null) {
-          ioService.printText("There is no such option. Please, try again");
-        }
+    for(int i = 0; i < optionList.size(); i++){
+      if(optionList.get(i).endsWith("true")){
+        optionList.set(i, optionList.get(i).split(",")[0]);
+        rightAnswerIndex = i + 1;
       }
-    } while (isCorrect == null);
+    }
 
-    return isCorrect;
+    int actualAnswer = ioService.readIntByInterval(question.getOptions().size());
+
+    return actualAnswer == rightAnswerIndex;
   }
 
   private void showResult(Result result){
@@ -66,12 +52,22 @@ public class TestExecutorImpl implements TestExecutor {
             + "% correctly");
   }
 
-  private void showQuestion(Question question){
-    String answersAsString = converter.getAnswersAsString(question);
+  private List<String> showQuestion(Question question){
+    List<String> answersAsList = converter.convert(question);
+    List<String> answersToShow = answersAsList.stream()
+        .map(answer -> {
+          if(answer.endsWith("true")){
+            return  answer.split(",")[0];
+          }
+          return answer;
+        })
+        .toList();
     ioService.printText(question.getIssue());
     ioService.printText("Answers:");
-    ioService.printText(answersAsString);
+    answersToShow.forEach(ioService::printText);
     ioService.printText("Enter an answer: ");
+
+    return answersAsList;
   }
 
 }

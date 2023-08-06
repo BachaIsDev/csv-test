@@ -29,7 +29,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   }
 
   @Override
-  public List<Question> findQuestionsByName(String testName) throws TestReadingException {
+  public List<Question> findQuestionsByTestName(String testName) throws TestReadingException {
     List<Question> questions;
     InputStream inputStream = null;
 

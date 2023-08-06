@@ -18,7 +18,7 @@ public class QuestionServiceImpl implements QuestionService {
   public List<Question> getQuestions(String testName) {
     List<Question> questions = null;
     try {
-      questions = questionRepository.findQuestionsByName(testName);
+      questions = questionRepository.findQuestionsByTestName(testName);
     } catch (TestReadingException e) {
       throw new TestReadingException("No such test", e);
     }

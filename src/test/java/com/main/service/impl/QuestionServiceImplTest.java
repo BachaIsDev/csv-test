@@ -24,19 +24,18 @@ class QuestionServiceImplTest {
   @Test
   void getQuestions_shouldCallRepo() throws TestReadingException {
     QuestionRepository questionRepository = mock(QuestionRepository.class);
-    IOService ioService = new IOServiceImpl();
     QuestionService questionService = new QuestionServiceImpl(questionRepository);
     Question question1 = new Question("issue1", List.of(mock(Option.class)));
     Question question2 = new Question("issue2", List.of(mock(Option.class)));
     List<Question> questions = List.of(question1, question2);
-    given(questionRepository.findQuestionsByName("test"))
+    given(questionRepository.findQuestionsByTestName("test"))
         .willReturn(questions);
 
     List<Question> resultQuestions = questionService.getQuestions("test");
 
     assertEquals(resultQuestions.get(0), question1);
     assertEquals(resultQuestions.get(1), question2);
-    verify(questionRepository).findQuestionsByName("test");
+    verify(questionRepository).findQuestionsByTestName("test");
   }
 
 }

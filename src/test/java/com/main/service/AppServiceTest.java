@@ -39,6 +39,6 @@ class AppServiceTest {
     appService.launchTest();
     System.setIn(stdin);
 
-    verify(questionRepository).findQuestionsByName(any());
+    verify(questionRepository).findQuestionsByTestName(any());
   }
 }
