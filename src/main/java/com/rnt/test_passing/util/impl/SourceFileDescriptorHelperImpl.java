@@ -86,27 +86,9 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
       URI uri = classLoader.getResource("tests").toURI();
 
       if (uri.getScheme().equals("jar")) {
-        String jarPath = getClass().getProtectionDomain()
-            .getCodeSource()
-            .getLocation()
-            .toURI()
-            .getPath();
-
-        // file walks JAR
-        uri = URI.create("jar:file:" + jarPath);
-        try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-          result = Files.walk(fs.getPath(RESOURCE_PATH))
-              .filter(Files::isRegularFile)
-              .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
-              .collect(Collectors.toSet());
-          result.forEach(System.out::println);
-        }
+        result = getTestNamesFromJar();
       } else {
-        URL resource = classLoader.getResource(RESOURCE_PATH);
-        result = Files.walk(Paths.get(resource.toURI()))
-            .filter(Files::isRegularFile)
-            .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
-            .collect(Collectors.toSet());
+        result = getTestNames();
       }
     } catch (IOException | URISyntaxException e) {
       throw new TestReadingException("There is no such test", e);
@@ -132,6 +114,40 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     }
 
     return fileNames;
+  }
+
+  private Set<SourceFileDescriptor> getTestNames() throws URISyntaxException, IOException {
+    Set<SourceFileDescriptor> result;
+
+    ClassLoader classLoader = getClass().getClassLoader();
+
+    URL resource = classLoader.getResource(RESOURCE_PATH);
+    result = Files.walk(Paths.get(resource.toURI()))
+        .filter(Files::isRegularFile)
+        .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
+        .collect(Collectors.toSet());
+
+    return result;
+  }
+
+  private Set<SourceFileDescriptor> getTestNamesFromJar() throws URISyntaxException, IOException {
+    Set<SourceFileDescriptor> result;
+
+    String jarPath = getClass().getProtectionDomain()
+        .getCodeSource()
+        .getLocation()
+        .toURI()
+        .getPath();
+
+    // file walks JAR
+    URI uri = URI.create("jar:file:" + jarPath);
+    try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+      result = Files.walk(fs.getPath(RESOURCE_PATH))
+          .filter(Files::isRegularFile)
+          .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
+          .collect(Collectors.toSet());
+    }
+    return result;
   }
 
   private boolean isJar() {

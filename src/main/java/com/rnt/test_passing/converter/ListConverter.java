@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import com.rnt.test_passing.exception.TestReadingException;
 
-public class ListConverter extends AbstractBeanField {
+public class ListConverter extends AbstractBeanField<String, String> {
 
   @Override
   protected Object convert(String value) {
