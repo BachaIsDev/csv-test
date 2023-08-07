@@ -20,12 +20,12 @@ public class AppService {
   }
 
   public void launchTest() {
-    ioService.printText("Enter the name of the test: ");
-    testService.getTestNames().forEach(ioService::printText);
-    String testName = ioService.readText();
-
     List<Question> questionList = null;
     try {
+      ioService.printText("Enter the name of the test: ");
+      testService.getTestNames().forEach(ioService::printText);
+      String testName = ioService.readText();
+
       questionList = questionService.getQuestions(testName);
     } catch (TestReadingException e){
       ioService.printText("There is no such test");

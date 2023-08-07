@@ -23,7 +23,7 @@ public class TestServiceImpl implements TestService {
     try {
       result = questionRepository.getQuestionTopicNames();
     } catch (TestReadingException e) {
-      ioService.printText("There is no such test");
+      throw new TestReadingException("There is no such test", e);
     }
     return result;
   }
