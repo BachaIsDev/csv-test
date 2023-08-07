@@ -53,12 +53,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
     SourceFileDescriptor descriptor = getSourceFileDescriptorByFileName(name);
     if(descriptor.isFromResources()) {
-      if(isJar()){
-        return getClass().getClassLoader().getResourceAsStream(name);
-      } else {
-        return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + name);
-      }
-
+      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + name);
     } else {
       InputStream is = null;
       for(String basePath: basePaths){
@@ -134,17 +129,6 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     }
 
     return fileNames;
-  }
-
-  private boolean isJar() {
-    ClassLoader classLoader = getClass().getClassLoader();
-    URI uri = null;
-    try {
-      uri = classLoader.getResource("tests").toURI();
-    } catch (URISyntaxException e) {
-      throw new TestReadingException("Wrong URI syntax!");
-    }
-    return uri.getScheme().equals("jar");
   }
 
 }
