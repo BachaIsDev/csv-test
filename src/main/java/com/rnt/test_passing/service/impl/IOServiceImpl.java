@@ -1,5 +1,6 @@
 package com.rnt.test_passing.service.impl;
 
+import com.rnt.test_passing.exception.TestReadingException;
 import java.io.PrintStream;
 import com.rnt.test_passing.service.IOService;
 import java.util.NoSuchElementException;
@@ -26,7 +27,7 @@ public class IOServiceImpl implements IOService {
     try {
       text = scanner.nextLine();
     } catch (NoSuchElementException e) {
-      throw new RuntimeException(e);
+      throw new TestReadingException("Error during read text", e);
     }
 
     return text;
