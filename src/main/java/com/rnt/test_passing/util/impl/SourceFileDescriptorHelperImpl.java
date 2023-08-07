@@ -70,7 +70,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     }
   }
 
-  public boolean checkFile(String path){
+  private boolean checkFile(String path){
     File file = new File(path);
 
     return file.exists();
