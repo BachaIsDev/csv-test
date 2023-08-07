@@ -24,4 +24,12 @@ public class SourceFileDescriptor {
   public void setFromResources(boolean fromResources) {
     this.fromResources = fromResources;
   }
+
+  @Override
+  public String toString() {
+    return "SourceFileDescriptor{" +
+        "fileName='" + fileName + '\'' +
+        ", fromResources=" + fromResources +
+        '}';
+  }
 }

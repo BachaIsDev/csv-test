@@ -8,10 +8,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +34,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
   public Set<SourceFileDescriptor> getFinalSourceFileDescriptors() {
     Set<SourceFileDescriptor> descriptors = new HashSet<>(getTestNamesFromResources());
     for(String basePath: basePaths){
-      descriptors.addAll(getTestNamesFromDir(basePath));
+      descriptors.addAll(getTestNamesFromExternal(basePath));
     }
 
     return descriptors;
@@ -49,7 +53,11 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
     SourceFileDescriptor descriptor = getSourceFileDescriptorByFileName(name);
     if(descriptor.isFromResources()) {
-      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + name);
+      if(isJar()){
+        return getClass().getClassLoader().getResourceAsStream(name);
+      } else {
+        return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + name);
+      }
 
     } else {
       InputStream is = null;
@@ -70,29 +78,38 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     return file.exists();
   }
 
-  private Set<SourceFileDescriptor> getTestNamesFromDir(String path) throws TestReadingException {
-
-    if(path.startsWith(RESOURCE_PATH)){
-      return getTestNamesFromResources();
-    }
-
-    return getTestNamesFromExternal(path);
-  }
-
   private Set<SourceFileDescriptor> getTestNamesFromResources() {
 
     Set<SourceFileDescriptor> result;
 
     ClassLoader classLoader = getClass().getClassLoader();
 
-    URL resource = classLoader.getResource(RESOURCE_PATH);
+    try {
+      URI uri = classLoader.getResource("tests").toURI();
 
-    try{
-      result = Files.walk(Paths.get(resource.toURI()))
-          .filter(Files::isRegularFile)
-          .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
-          .collect(Collectors.toSet());
+      if (uri.getScheme().equals("jar")) {
+        String jarPath = getClass().getProtectionDomain()
+            .getCodeSource()
+            .getLocation()
+            .toURI()
+            .getPath();
 
+        // file walks JAR
+        uri = URI.create("jar:file:" + jarPath);
+        try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+          result = Files.walk(fs.getPath(RESOURCE_PATH))
+              .filter(Files::isRegularFile)
+              .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
+              .collect(Collectors.toSet());
+          result.forEach(System.out::println);
+        }
+      } else {
+        URL resource = classLoader.getResource(RESOURCE_PATH);
+        result = Files.walk(Paths.get(resource.toURI()))
+            .filter(Files::isRegularFile)
+            .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
+            .collect(Collectors.toSet());
+      }
     } catch (IOException | URISyntaxException e) {
       throw new TestReadingException("There is no such test", e);
     }
@@ -118,4 +135,16 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
     return fileNames;
   }
+
+  private boolean isJar() {
+    ClassLoader classLoader = getClass().getClassLoader();
+    URI uri = null;
+    try {
+      uri = classLoader.getResource("tests").toURI();
+    } catch (URISyntaxException e) {
+      throw new TestReadingException("Wrong URI syntax!");
+    }
+    return uri.getScheme().equals("jar");
+  }
+
 }
