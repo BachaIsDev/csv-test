@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelper {
 
   private final List<String> basePaths;
-  private static final String RESOURCE_PATH = "tests\\";
+  private static final String RESOURCE_PATH = "tests";
 
   public SourceFileDescriptorHelperImpl(List<String> basePaths){
     this.basePaths = basePaths;
@@ -53,7 +53,10 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
     SourceFileDescriptor descriptor = getSourceFileDescriptorByFileName(name);
     if(descriptor.isFromResources()) {
-      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + name);
+      if (isJar()){
+        return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "/" + name);
+      }
+      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "\\" + name);
     } else {
       InputStream is = null;
       for(String basePath: basePaths){
@@ -129,6 +132,18 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     }
 
     return fileNames;
+  }
+
+  private boolean isJar() {
+    ClassLoader classLoader = getClass().getClassLoader();
+    URI uri = null;
+    try {
+      uri = classLoader.getResource("tests").toURI();
+    } catch (URISyntaxException e) {
+      throw new TestReadingException("No such test", e);
+    }
+
+    return uri.getScheme().equals("jar");
   }
 
 }
