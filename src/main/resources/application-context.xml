@@ -13,7 +13,6 @@
 
   <bean id="testService" class="com.rnt.test_passing.service.impl.TestServiceImpl">
     <constructor-arg ref="questionRepository"/>
-    <constructor-arg ref="ioService"/>
   </bean>
 
   <bean id="testExecutor" class="com.rnt.test_passing.service.impl.TestExecutorImpl">

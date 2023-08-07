@@ -10,16 +10,14 @@ import java.util.List;
 public class TestServiceImpl implements TestService {
 
   private final QuestionRepository questionRepository;
-  private final IOService ioService;
 
-  public TestServiceImpl(QuestionRepository questionRepository, IOService ioService) {
+  public TestServiceImpl(QuestionRepository questionRepository) {
     this.questionRepository = questionRepository;
-    this.ioService = ioService;
   }
 
   @Override
   public List<String> getTestNames() {
-    List<String> result = new ArrayList<>();
+    List<String> result;
     try {
       result = questionRepository.getQuestionTopicNames();
     } catch (TestReadingException e) {
