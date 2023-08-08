@@ -1,15 +1,15 @@
 package com.rnt.test_passing.service.impl;
 
+import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.service.TestExecutor;
 import com.rnt.test_passing.util.impl.QuestionConverter;
+import java.util.Collections;
 import java.util.List;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.Result;
 import com.rnt.test_passing.service.IOService;
-import java.util.stream.Collectors;
 
 public class TestExecutorImpl implements TestExecutor {
-
   private final IOService ioService;
   private final QuestionConverter converter;
 
@@ -23,26 +23,26 @@ public class TestExecutorImpl implements TestExecutor {
     ioService.printText("Answer correctly as many questions as possible. Good Luck!");
     Result result = new Result(0, questions.size());
     for (Question question : questions) {
-      boolean rightAnswer = processTest(question);
+      boolean rightAnswer = processQuestion(question);
       result.applyAnswer(rightAnswer);
     }
 
     showResult(result);
   }
 
-  private boolean processTest(Question question) {
-    List<String> optionList = showQuestion(question);
-    int rightAnswerIndex = 0;
+  private boolean processQuestion(Question question) {
+    Collections.shuffle(question.getOptions());
+    showOptions(question);
 
-    for(int i = 0; i < optionList.size(); i++){
-      if(optionList.get(i).endsWith("true")){
-        optionList.set(i, optionList.get(i).split(",")[0]);
+    int rightAnswerIndex = 0;
+    int actualAnswer =
+        ioService.readIntByInterval(question.getOptions().size(), "There is no such option");
+    List<Option> options = question.getOptions();
+    for(int i = 0; i < options.size(); i++){
+      if(options.get(i).isCorrect()){
         rightAnswerIndex = i + 1;
       }
     }
-
-    int actualAnswer = ioService.readIntByInterval(question.getOptions().size());
-
     return actualAnswer == rightAnswerIndex;
   }
 
@@ -52,22 +52,13 @@ public class TestExecutorImpl implements TestExecutor {
             + "% correctly");
   }
 
-  private List<String> showQuestion(Question question){
-    List<String> answersAsList = converter.convert(question);
-    List<String> answersToShow = answersAsList.stream()
-        .map(answer -> {
-          if(answer.endsWith("true")){
-            return  answer.split(",")[0];
-          }
-          return answer;
-        })
-        .toList();
+  private void showOptions(Question question){
+    String answersAsList = converter.convert(question);
+
     ioService.printText(question.getIssue());
     ioService.printText("Answers:");
-    answersToShow.forEach(ioService::printText);
+    ioService.printText(answersAsList);
     ioService.printText("Enter an answer: ");
-
-    return answersAsList;
   }
 
 }

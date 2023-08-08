@@ -50,30 +50,18 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
   @Override
   public InputStream openSourceFileDescriptorStream(String name) throws FileNotFoundException {
-
     SourceFileDescriptor descriptor = getSourceFileDescriptorByFileName(name);
     if(descriptor.isFromResources()) {
-      if (isJar()){
-        return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "/" + name);
-      }
-      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "\\" + name);
+      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "/" + name);
     } else {
-      InputStream is = null;
       for(String basePath: basePaths){
-        if(checkFile(basePath + name)){
-          is = new FileInputStream(basePath + name);
-          break;
+        File file = Paths.get(basePath, name).toFile();
+        if(file.exists()){
+          return new FileInputStream(basePath + name);
         }
       }
-
-      return is;
     }
-  }
-
-  private boolean checkFile(String path){
-    File file = new File(path);
-
-    return file.exists();
+    throw new FileNotFoundException(String.format("File %s not found", name));
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromResources() {

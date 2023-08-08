@@ -1,6 +1,8 @@
 package com.rnt.test_passing.entity;
 
 public class Option {
+  private String text;
+  private boolean correct;
 
   public Option() {
   }
@@ -9,10 +11,6 @@ public class Option {
     this.text = text;
     this.correct = correct;
   }
-
-  private String text;
-
-  private boolean correct;
 
   public String getText() {
     return text;

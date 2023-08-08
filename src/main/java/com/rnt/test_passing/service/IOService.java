@@ -8,5 +8,5 @@ public interface IOService {
 
   String readText();
 
-  int readIntByInterval(int max);
+  int readIntByInterval(int max, String message);
 }

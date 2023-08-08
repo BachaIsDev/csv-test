@@ -16,14 +16,10 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   public List<Question> getQuestions(String testName) {
-    List<Question> questions = null;
     try {
-      questions = questionRepository.findQuestionsByTestName(testName);
+      return questionRepository.findQuestionsByTestName(testName);
     } catch (TestReadingException e) {
       throw new TestReadingException("No such test", e);
     }
-
-    return questions;
   }
-
 }

@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class IOServiceImpl implements IOService {
-
   private final PrintStream printStream;
   private final Scanner scanner;
 
@@ -23,25 +22,22 @@ public class IOServiceImpl implements IOService {
 
   @Override
   public String readText() {
-    String text = null;
     try {
-      text = scanner.nextLine();
+      return scanner.nextLine();
     } catch (NoSuchElementException e) {
       throw new TestReadingException("Error during read text", e);
     }
-
-    return text;
   }
 
   @Override
-  public int readIntByInterval(int max){
+  public int readIntByInterval(int max, String message){
     int answerNumber = scanner.nextInt();
 
     if(answerNumber >= 1 && answerNumber <= max) {
       return answerNumber;
     } else {
-      printText("There is no such option. Please, try again");
-      return readIntByInterval(max);
+      printText(message);
+      return readIntByInterval(max, message);
     }
   }
 

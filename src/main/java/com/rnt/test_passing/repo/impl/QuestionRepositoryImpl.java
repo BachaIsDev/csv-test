@@ -21,7 +21,6 @@ import com.rnt.test_passing.util.SourceFileDescriptor;
 import com.rnt.test_passing.util.SourceFileDescriptorHelper;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
-
   private final SourceFileDescriptorHelper sourceFileDescriptorHelper;
 
   public QuestionRepositoryImpl(SourceFileDescriptorHelper sourceFileDescriptorHelper) {
@@ -44,7 +43,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   }
 
   @Override
-  public List<String> getQuestionTopicNames() throws TestReadingException {
+  public List<String> getQuestionTestNames() throws TestReadingException {
     Set<SourceFileDescriptor> testNames = sourceFileDescriptorHelper.getFinalSourceFileDescriptors();
     List<String> testNamesAsList = new ArrayList<>();
     testNames.forEach(descriptor -> testNamesAsList.add(descriptor.getFileName()));
@@ -97,14 +96,16 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     List<Question> questionList = new ArrayList<>();
     try{
       for (QuestionDTO questionDTO : dtoList) {
-        Question question = new Question();
-        List<Option> options = new ArrayList<>();
-        question.setIssue(questionDTO.getIssue());
-        options.add(new Option(questionDTO.getOptions().get(0), true));
-        for (int i = 1; i < questionDTO.getOptions().size(); i++) {
-          options.add(new Option(questionDTO.getOptions().get(i), false));
+        List<Option> resultOptions = new ArrayList<>();
+        List<String> options = questionDTO.getOptions().stream().toList();
+        for (int i = 0; i < questionDTO.getOptions().size(); i++) {
+          if(options.get(i).contains("right")){
+            resultOptions.add((new Option(options.get(i).split(",")[0], true)));
+          } else {
+            resultOptions.add(new Option(questionDTO.getOptions().get(i), false));
+          }
         }
-        question.setOptions(options);
+        Question question = new Question(questionDTO.getIssue(), resultOptions);
         questionList.add(question);
       }
     }catch (IndexOutOfBoundsException e){
