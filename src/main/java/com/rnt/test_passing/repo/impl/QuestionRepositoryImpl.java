@@ -30,10 +30,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   @Override
   public List<Question> findQuestionsByTestName(String testName) throws TestReadingException {
     List<Question> questions;
-    InputStream inputStream = null;
 
     try {
-      inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
+      InputStream inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
       questions = getQuestions(inputStream);
     } catch (TestReadingException | FileNotFoundException | NullPointerException e){
       throw new TestReadingException("File not found", e);
