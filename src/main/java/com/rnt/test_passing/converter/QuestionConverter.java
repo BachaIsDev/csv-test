@@ -11,7 +11,9 @@ public class QuestionConverter implements Converter<Question, String> {
   @Override
   public String convert(Question question) {
     StringBuilder stringBuilder = new StringBuilder();
-    List<String> immutableString = question.getOptions().stream().map(Option::getText).toList();
+    List<String> immutableString = question.getOptions().stream()
+        .map(Option::getText)
+        .toList();
     List<String> optionsAsList = new ArrayList<>(immutableString);
 
     for(int i = 0; i < optionsAsList.size(); i++){
