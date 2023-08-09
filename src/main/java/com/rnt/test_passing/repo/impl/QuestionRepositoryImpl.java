@@ -1,5 +1,7 @@
 package com.rnt.test_passing.repo.impl;
 
+import static java.util.Objects.isNull;
+
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.BufferedReader;
@@ -29,38 +31,31 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
   @Override
   public List<Question> findQuestionsByTestName(String testName) throws TestReadingException {
-    List<Question> questions;
-
     try {
       InputStream inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
-      questions = getQuestions(inputStream);
+      return getQuestions(inputStream);
     } catch (TestReadingException | FileNotFoundException | NullPointerException e){
       throw new TestReadingException("File not found", e);
     }
-
-    return questions;
   }
 
   @Override
   public List<String> getQuestionTestNames() throws TestReadingException {
-    Set<SourceFileDescriptor> testNames = sourceFileDescriptorHelper.getFinalSourceFileDescriptors();
-    List<String> testNamesAsList = new ArrayList<>();
-    testNames.forEach(descriptor -> testNamesAsList.add(descriptor.getFileName()));
-
-    return testNamesAsList;
+    return sourceFileDescriptorHelper.getFinalSourceFileDescriptors().stream()
+        .map(SourceFileDescriptor::getFileName)
+        .toList();
   }
 
   private List<Question> getQuestions(InputStream inputStream) throws TestReadingException {
-    List<Question> result;
+    if(isNull(inputStream)) {
+      throw new TestReadingException("Can't find a file");
+    }
     try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(streamReader)) {
-      result = readQuestions(reader);
-
+      return readQuestions(reader);
     } catch (IOException e) {
       throw new TestReadingException("Invalid input parameters", e);
     }
-
-    return result;
   }
 
   private List<Question> readQuestions(Reader reader) throws TestReadingException {
@@ -78,26 +73,21 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   }
 
   private List<Question> dtoToEntity(List<QuestionDTO> dtoList) throws TestReadingException {
-    List<Question> questionList = new ArrayList<>();
     try{
-      for (QuestionDTO questionDTO : dtoList) {
-        List<Option> resultOptions = new ArrayList<>();
-        List<String> options = questionDTO.getOptions().stream().toList();
-        for (int i = 0; i < questionDTO.getOptions().size(); i++) {
-          if(options.get(i).contains("right")){
-            resultOptions.add((new Option(options.get(i).split(",")[0], true)));
-          } else {
-            resultOptions.add(new Option(questionDTO.getOptions().get(i), false));
-          }
-        }
-        Question question = new Question(questionDTO.getIssue(), resultOptions);
-        questionList.add(question);
-      }
-    }catch (IndexOutOfBoundsException e){
+      return dtoList.stream()
+          .map(dto -> {
+            List<Option> resultOption = dto.getOptions().stream()
+                .map(this::stringToOption).toList();
+            return new Question(dto.getIssue(), resultOption);
+          }).toList();
+      } catch (IndexOutOfBoundsException e){
       throw new TestReadingException("Can't convert DTO to Object", e);
     }
-
-    return questionList;
   }
 
+  private Option stringToOption(String option) {
+    boolean isRight = option.contains("right");
+    String[] parts = option.split(",");
+    return new Option(parts[0], isRight);
+  }
 }

@@ -1,8 +1,8 @@
 package com.rnt.test_passing.service.impl;
 
-import com.rnt.test_passing.entity.Option;
+import com.rnt.test_passing.converter.ConversationService;
 import com.rnt.test_passing.service.TestExecutor;
-import com.rnt.test_passing.converter.QuestionConverter;
+import com.rnt.test_passing.converter.impl.QuestionConverter;
 import java.util.Collections;
 import java.util.List;
 import com.rnt.test_passing.entity.Question;
@@ -11,7 +11,7 @@ import com.rnt.test_passing.service.IOService;
 
 public class TestExecutorImpl implements TestExecutor {
   private final IOService ioService;
-  private final QuestionConverter converter;
+  private final ConversationService<Question, String> converter;
 
   public TestExecutorImpl(IOService ioService, QuestionConverter converter) {
     this.ioService = ioService;
@@ -34,16 +34,8 @@ public class TestExecutorImpl implements TestExecutor {
     Collections.shuffle(question.getOptions());
     showOptions(question);
 
-    int rightAnswerIndex = 0;
-    int actualAnswer =
-        ioService.readIntByInterval(question.getOptions().size(), "There is no such option");
-    List<Option> options = question.getOptions();
-    for(int i = 0; i < options.size(); i++){
-      if(options.get(i).isCorrect()){
-        rightAnswerIndex = i + 1;
-      }
-    }
-    return actualAnswer == rightAnswerIndex;
+    int actualAnswer = ioService.readIntByInterval(question.getOptions().size(), "There is no such option");
+    return question.getOptions().get(actualAnswer).isCorrect();
   }
 
   private void showResult(Result result){

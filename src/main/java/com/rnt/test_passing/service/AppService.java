@@ -20,24 +20,18 @@ public class AppService {
   }
 
   public void launchTest() {
-    List<Question> questionList = null;
     try {
-      ioService.printText("Enter the name of the test: ");
-      testService.getTestNames().forEach(ioService::printText);
-      String testName = ioService.readText();
-
-      questionList = questionService.getQuestions(testName);
-    } catch (TestReadingException e){
+      String testName = printAndAsTestNames();
+      List<Question> questionList = questionService.getQuestions(testName);
+      testExecutor.startTest(questionList);
+    } catch (TestReadingException | NullPointerException e) {
       ioService.printText("There is no such test");
     }
-
-    if (questionList == null || questionList.isEmpty()) {
-      return;
-    }
-
-    testExecutor.startTest(questionList);
   }
 
-
-
+  private String printAndAsTestNames() {
+    ioService.printText("Enter the name of the test: ");
+    testService.getTestNames().forEach(ioService::printText);
+    return ioService.readText();
+  }
 }

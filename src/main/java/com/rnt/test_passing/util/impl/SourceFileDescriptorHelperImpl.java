@@ -1,5 +1,7 @@
 package com.rnt.test_passing.util.impl;
 
+import static java.util.Objects.isNull;
+
 import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
 import com.rnt.test_passing.util.SourceFileDescriptorHelper;
@@ -43,9 +45,10 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
   @Override
   public SourceFileDescriptor getSourceFileDescriptorByFileName(String name) {
     Set<SourceFileDescriptor> descriptors = getFinalSourceFileDescriptors();
-    return descriptors.stream().filter(descriptor ->
-            descriptor.getFileName().equals(name))
-        .findFirst().orElseThrow(() -> new TestReadingException("can't find test with this name"));
+    return descriptors.stream()
+        .filter(descriptor -> descriptor.getFileName().equals(name))
+        .findFirst()
+        .orElseThrow(() -> new TestReadingException("can't find test with this name"));
   }
 
   @Override
@@ -57,7 +60,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
       for(String basePath: basePaths){
         File file = Paths.get(basePath, name).toFile();
         if(file.exists()){
-          return new FileInputStream(basePath + name);
+          return new FileInputStream(String.valueOf(Paths.get(basePath + name)));
         }
       }
     }
@@ -72,17 +75,17 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
 
     try {
       URI uri = classLoader.getResource("tests").toURI();
-
+      if(isNull(uri)) {
+        throw new TestReadingException("Can't find such file");
+      }
       if (uri.getScheme().equals("jar")) {
-        result = getTestNamesFromJar();
+        return getTestNamesFromJar();
       } else {
-        result = getTestNames();
+        return getTestNames();
       }
     } catch (IOException | URISyntaxException e) {
       throw new TestReadingException("There is no such test", e);
     }
-
-    return result;
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromExternal(String path) {
