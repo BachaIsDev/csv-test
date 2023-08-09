@@ -138,16 +138,4 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     return result;
   }
 
-  private boolean isJar() {
-    ClassLoader classLoader = getClass().getClassLoader();
-    URI uri = null;
-    try {
-      uri = classLoader.getResource("tests").toURI();
-    } catch (URISyntaxException e) {
-      throw new TestReadingException("No such test", e);
-    }
-
-    return uri.getScheme().equals("jar");
-  }
-
 }

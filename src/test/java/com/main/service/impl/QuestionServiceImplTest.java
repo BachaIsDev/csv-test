@@ -31,8 +31,12 @@ class QuestionServiceImplTest {
 
   @Test
   void getQuestions_shouldCallRepo() throws TestReadingException {
-    Question question1 = new Question("issue1", List.of(mock(Option.class)));
-    Question question2 = new Question("issue2", List.of(mock(Option.class)));
+    List<Option> options1 = List.of(new Option("test1-1", true),
+        new Option("test1-2", false));
+    List<Option> options2 = List.of(new Option("test2-1", true),
+        new Option("test2-2", false));
+    Question question1 = new Question("text1", options1);
+    Question question2 = new Question("text2", options2);
     List<Question> questions = List.of(question1, question2);
     given(questionRepository.findQuestionsByTestName("test"))
         .willReturn(questions);
