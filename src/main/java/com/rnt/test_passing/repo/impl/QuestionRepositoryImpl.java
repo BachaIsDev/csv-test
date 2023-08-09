@@ -36,7 +36,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
       inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
       questions = getQuestionsFromExternal(inputStream);
     } catch (TestReadingException | FileNotFoundException | NullPointerException e){
-      questions = getQuestionsFromResources(inputStream);
+      throw new TestReadingException("File not found", e);
     }
 
     return questions;

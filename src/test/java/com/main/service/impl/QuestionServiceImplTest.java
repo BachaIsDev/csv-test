@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.rnt.test_passing.repo.impl.QuestionRepositoryImpl;
 import com.rnt.test_passing.service.QuestionService;
 import com.rnt.test_passing.service.impl.IOServiceImpl;
 import com.rnt.test_passing.service.impl.QuestionServiceImpl;
@@ -16,15 +17,20 @@ import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.repo.QuestionRepository;
 import com.rnt.test_passing.service.IOService;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceImplTest {
+  @InjectMocks
+  private QuestionServiceImpl questionService;
+
+  @Mock
+  private QuestionRepositoryImpl questionRepository;
 
   @Test
   void getQuestions_shouldCallRepo() throws TestReadingException {
-    QuestionRepository questionRepository = mock(QuestionRepository.class);
-    QuestionService questionService = new QuestionServiceImpl(questionRepository);
     Question question1 = new Question("issue1", List.of(mock(Option.class)));
     Question question2 = new Question("issue2", List.of(mock(Option.class)));
     List<Question> questions = List.of(question1, question2);
