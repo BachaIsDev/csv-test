@@ -1,4 +1,4 @@
-package com.rnt.test_passing.util.impl;
+package com.rnt.test_passing.util;
 
 import com.rnt.test_passing.entity.Option;
 import java.util.ArrayList;
