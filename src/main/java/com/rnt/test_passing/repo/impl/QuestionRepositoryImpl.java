@@ -34,7 +34,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     try {
       inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
-      questions = getQuestionsFromExternal(inputStream);
+      questions = getQuestions(inputStream);
     } catch (TestReadingException | FileNotFoundException | NullPointerException e){
       throw new TestReadingException("File not found", e);
     }
@@ -51,21 +51,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     return testNamesAsList;
   }
 
-  private List<Question> getQuestionsFromResources(InputStream inputStream) throws TestReadingException {
-    List<Question> result;
-
-    try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        BufferedReader reader = new BufferedReader(streamReader)) {
-      result = readQuestions(reader);
-
-    } catch (IOException e) {
-      throw new TestReadingException("Error during reading test questions", e);
-    }
-
-    return result;
-  }
-
-  private List<Question> getQuestionsFromExternal(InputStream inputStream) throws TestReadingException {
+  private List<Question> getQuestions(InputStream inputStream) throws TestReadingException {
     List<Question> result;
     try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(streamReader)) {
