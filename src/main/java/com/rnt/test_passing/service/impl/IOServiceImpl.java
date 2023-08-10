@@ -31,14 +31,12 @@ public class IOServiceImpl implements IOService {
 
   @Override
   public int readIntByInterval(int max, String message){
-    int answerNumber = scanner.nextInt();
-
-    if(answerNumber >= 1 && answerNumber <= max) {
-      return answerNumber;
-    } else {
+    while (true) {
+      int answerNumber = scanner.nextInt();
+      if(answerNumber >= 1 && answerNumber <= max) {
+        return answerNumber;
+      }
       printText(message);
-      return readIntByInterval(max, message);
     }
   }
-
 }

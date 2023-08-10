@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.rnt.test_passing.converter.impl.DtoToQuestionConverter;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,10 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.dto.QuestionDTO;
 import com.rnt.test_passing.exception.TestReadingException;
@@ -24,9 +22,12 @@ import com.rnt.test_passing.util.SourceFileDescriptorHelper;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
   private final SourceFileDescriptorHelper sourceFileDescriptorHelper;
+  private final DtoToQuestionConverter converter;
 
-  public QuestionRepositoryImpl(SourceFileDescriptorHelper sourceFileDescriptorHelper) {
+  public QuestionRepositoryImpl(SourceFileDescriptorHelper sourceFileDescriptorHelper,
+      DtoToQuestionConverter converter) {
     this.sourceFileDescriptorHelper = sourceFileDescriptorHelper;
+    this.converter = converter;
   }
 
   @Override
@@ -69,25 +70,6 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     List<QuestionDTO> result;
     result = csvReader.parse();
 
-    return dtoToEntity(result);
-  }
-
-  private List<Question> dtoToEntity(List<QuestionDTO> dtoList) throws TestReadingException {
-    try{
-      return dtoList.stream()
-          .map(dto -> {
-            List<Option> resultOption = dto.getOptions().stream()
-                .map(this::stringToOption).toList();
-            return new Question(dto.getIssue(), resultOption);
-          }).toList();
-      } catch (IndexOutOfBoundsException e){
-      throw new TestReadingException("Can't convert DTO to Object", e);
-    }
-  }
-
-  private Option stringToOption(String option) {
-    boolean isRight = option.contains("right");
-    String[] parts = option.split(",");
-    return new Option(parts[0], isRight);
+    return converter.convert(result);
   }
 }

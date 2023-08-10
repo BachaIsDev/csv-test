@@ -21,7 +21,7 @@ public class AppService {
 
   public void launchTest() {
     try {
-      String testName = printAndAsTestNames();
+      String testName = printAndAskTestNames();
       List<Question> questionList = questionService.getQuestions(testName);
       testExecutor.startTest(questionList);
     } catch (TestReadingException | NullPointerException e) {
@@ -29,7 +29,7 @@ public class AppService {
     }
   }
 
-  private String printAndAsTestNames() {
+  private String printAndAskTestNames() {
     ioService.printText("Enter the name of the test: ");
     testService.getTestNames().forEach(ioService::printText);
     return ioService.readText();

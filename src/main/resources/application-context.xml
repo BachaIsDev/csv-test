@@ -24,7 +24,7 @@
     <constructor-arg ref="questionRepository"/>
   </bean>
 
-  <bean id="questionConverter" class="com.rnt.test_passing.converter.impl.QuestionConverter">
+  <bean id="questionConverter" class="com.rnt.test_passing.converter.impl.OptionConverter">
   </bean>
 
   <bean id="scanner" class="java.util.Scanner">

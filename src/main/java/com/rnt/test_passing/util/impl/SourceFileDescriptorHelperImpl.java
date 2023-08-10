@@ -68,11 +68,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromResources() {
-
-    Set<SourceFileDescriptor> result;
-
     ClassLoader classLoader = getClass().getClassLoader();
-
     try {
       URI uri = classLoader.getResource("tests").toURI();
       if(isNull(uri)) {

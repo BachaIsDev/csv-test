@@ -1,13 +1,10 @@
 package com.main.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.rnt.test_passing.repo.impl.QuestionRepositoryImpl;
-import com.rnt.test_passing.service.QuestionService;
-import com.rnt.test_passing.service.impl.IOServiceImpl;
 import com.rnt.test_passing.service.impl.QuestionServiceImpl;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -15,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.exception.TestReadingException;
-import com.rnt.test_passing.repo.QuestionRepository;
-import com.rnt.test_passing.service.IOService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,8 +38,8 @@ class QuestionServiceImplTest {
 
     List<Question> resultQuestions = questionService.getQuestions("test");
 
-    assertEquals(resultQuestions.get(0), question1);
-    assertEquals(resultQuestions.get(1), question2);
+    assertThat(resultQuestions.get(0)).isEqualTo(question1);
+    assertThat(resultQuestions.get(1)).isEqualTo(question2);
     verify(questionRepository).findQuestionsByTestName("test");
   }
 
