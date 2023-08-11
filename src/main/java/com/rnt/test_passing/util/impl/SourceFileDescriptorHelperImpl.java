@@ -99,27 +99,20 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
         fileNames.add(descriptor);
       }
     }
-
     return fileNames;
   }
 
   private Set<SourceFileDescriptor> getTestNames() throws URISyntaxException, IOException {
-    Set<SourceFileDescriptor> result;
-
     ClassLoader classLoader = getClass().getClassLoader();
 
     URL resource = classLoader.getResource(RESOURCE_PATH);
-    result = Files.walk(Paths.get(resource.toURI()))
+    return Files.walk(Paths.get(resource.toURI()))
         .filter(Files::isRegularFile)
         .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
         .collect(Collectors.toSet());
-
-    return result;
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromJar() throws URISyntaxException, IOException {
-    Set<SourceFileDescriptor> result;
-
     String jarPath = getClass().getProtectionDomain()
         .getCodeSource()
         .getLocation()
@@ -129,12 +122,11 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     // file walks JAR
     URI uri = URI.create("jar:file:" + jarPath);
     try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-      result = Files.walk(fs.getPath(RESOURCE_PATH))
+      return Files.walk(fs.getPath(RESOURCE_PATH))
           .filter(Files::isRegularFile)
           .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
           .collect(Collectors.toSet());
     }
-    return result;
   }
 
 }

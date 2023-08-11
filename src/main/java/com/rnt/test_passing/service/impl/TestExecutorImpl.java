@@ -5,7 +5,6 @@ import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.service.TestExecutor;
 import com.rnt.test_passing.converter.impl.OptionConverter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import com.rnt.test_passing.entity.Question;

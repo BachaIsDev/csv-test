@@ -7,8 +7,12 @@
     <constructor-arg name="basePaths" value="${application.path}"/>
   </bean>
 
+  <bean id="dtoConverter" class="com.rnt.test_passing.converter.impl.DtoToQuestionConverter">
+  </bean>
+
   <bean id="questionRepository" class="com.rnt.test_passing.repo.impl.QuestionRepositoryImpl">
     <constructor-arg ref="sourceFileDescriptorHelperImpl"/>
+    <constructor-arg ref="dtoConverter"/>
   </bean>
 
   <bean id="testService" class="com.rnt.test_passing.service.impl.TestServiceImpl">

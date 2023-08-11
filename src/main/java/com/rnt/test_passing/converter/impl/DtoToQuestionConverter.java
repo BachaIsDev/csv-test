@@ -1,13 +1,13 @@
 package com.rnt.test_passing.converter.impl;
 
+import com.rnt.test_passing.converter.ConversationService;
 import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.dto.QuestionDTO;
 import com.rnt.test_passing.exception.TestReadingException;
 import java.util.List;
-import org.springframework.core.convert.converter.Converter;
 
-public class DtoToQuestionConverter implements Converter<List<QuestionDTO>, List<Question>> {
+public class DtoToQuestionConverter implements ConversationService<List<QuestionDTO>, List<Question>> {
   @Override
   public List<Question> convert(List<QuestionDTO> source) {
     try{
