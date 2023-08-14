@@ -1,6 +1,5 @@
 package com.rnt.test_passing.service.impl;
 
-import com.rnt.test_passing.converter.ConversationService;
 import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.service.TestExecutor;
 import com.rnt.test_passing.converter.impl.OptionConverter;
@@ -13,7 +12,7 @@ import com.rnt.test_passing.service.IOService;
 
 public class TestExecutorImpl implements TestExecutor {
   private final IOService ioService;
-  private final ConversationService<List<Option>, String> converter;
+  private final OptionConverter converter;
 
   public TestExecutorImpl(IOService ioService, OptionConverter converter) {
     this.ioService = ioService;

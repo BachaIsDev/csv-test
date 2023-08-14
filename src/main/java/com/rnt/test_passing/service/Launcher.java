@@ -4,14 +4,14 @@ import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.exception.TestReadingException;
 import java.util.List;
 
-public class AppService {
+public class Launcher {
 
   private final TestExecutor testExecutor;
   private final QuestionService questionService;
   private final IOService ioService;
   private final TestService testService;
 
-  public AppService(TestExecutor testExecutor, QuestionService questionService, IOService ioService,
+  public Launcher(TestExecutor testExecutor, QuestionService questionService, IOService ioService,
       TestService testService) {
     this.testExecutor = testExecutor;
     this.questionService = questionService;
@@ -21,8 +21,7 @@ public class AppService {
 
   public void launchTest() {
     try {
-      String testName = printAndAskTestNames();
-      List<Question> questionList = questionService.getQuestions(testName);
+      List<Question> questionList = questionService.getQuestions(printAndAskTestNames());
       testExecutor.startTest(questionList);
     } catch (TestReadingException | NullPointerException e) {
       ioService.printText("There is no such test");

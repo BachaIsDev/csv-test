@@ -40,7 +40,7 @@
     <constructor-arg ref="scanner"/>
   </bean>
 
-  <bean id="appService" class="com.rnt.test_passing.service.AppService">
+  <bean id="launcher" class="com.rnt.test_passing.service.Launcher">
     <constructor-arg ref="testExecutor"/>
     <constructor-arg ref="questionService"/>
     <constructor-arg ref="ioService"/>

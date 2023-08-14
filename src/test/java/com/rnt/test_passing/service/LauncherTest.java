@@ -20,9 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
-class AppServiceTest {
+class LauncherTest {
   @InjectMocks
-  private AppService appService;
+  private Launcher launcher;
 
   @Mock
   private TestExecutorImpl testExecutor;
@@ -43,20 +43,20 @@ class AppServiceTest {
         new Question("text2", options2));
     given(questionService.getQuestions(any())).willReturn(questions);
 
-    appService.launchTest();
+    launcher.launchTest();
 
     verify(testExecutor).startTest(questions);
   }
   @Test
   void launchTest_shouldNotCallExecutor() {
-    appService.launchTest();
+    launcher.launchTest();
 
     verify(testExecutor, never()).startTest(any());
   }
 
   @Test
   void launchTest_shouldCallTestService() {
-    appService.launchTest();
+    launcher.launchTest();
 
     verify(testService).getTestNames();
   }
