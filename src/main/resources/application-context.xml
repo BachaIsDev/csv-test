@@ -6,6 +6,7 @@
   <bean id="sourceFileDescriptorHelperImpl" class="com.rnt.test_passing.util.impl.SourceFileDescriptorHelperImpl">
     <constructor-arg name="basePaths" value="${application.path}"/>
   </bean>
+
   <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
     <property name="converters">
       <set>
