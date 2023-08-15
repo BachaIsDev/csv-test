@@ -12,14 +12,15 @@ import java.util.List;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.Result;
 import com.rnt.test_passing.service.IOService;
+import org.springframework.core.convert.ConversionService;
 
 public class TestExecutorImpl implements TestExecutor {
   private final IOService ioService;
-  private final OptionConverter converter;
+  private final ConversionService conversionService;
 
-  public TestExecutorImpl(IOService ioService, OptionConverter converter) {
+  public TestExecutorImpl(IOService ioService, ConversionService conversionService) {
     this.ioService = ioService;
-    this.converter = converter;
+    this.conversionService = conversionService;
   }
 
   @Override
@@ -55,7 +56,7 @@ public class TestExecutorImpl implements TestExecutor {
   }
 
   private void showOptions(Question question){
-    String answersAsList = converter.convert(question.getOptions());
+    String answersAsList = conversionService.convert(question.getOptions(), String.class);
 
     ioService.printText(question.getIssue());
     ioService.printText("Answers:");

@@ -23,7 +23,7 @@ public class Launcher {
       String testName = printAndAskTestNames();
       List<Question> questionList = questionService.getQuestions(testName);
       testExecutor.startTest(questionList);
-    } catch (TestReadingException | NullPointerException e) {
+    } catch (TestReadingException e) {
       ioService.printText("There is no such test");
     }
   }

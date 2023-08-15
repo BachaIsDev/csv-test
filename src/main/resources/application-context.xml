@@ -33,7 +33,7 @@
 
   <bean id="testExecutor" class="com.rnt.test_passing.service.impl.TestExecutorImpl">
     <constructor-arg ref="ioService"/>
-    <constructor-arg ref="optionConverter"/>
+    <constructor-arg ref="conversionService"/>
   </bean>
 
   <bean id="questionService" class="com.rnt.test_passing.service.impl.QuestionServiceImpl">
