@@ -21,7 +21,8 @@ public class Launcher {
 
   public void launchTest() {
     try {
-      List<Question> questionList = questionService.getQuestions(printAndAskTestNames());
+      String testName = printAndAskTestNames();
+      List<Question> questionList = questionService.getQuestions(testName);
       testExecutor.startTest(questionList);
     } catch (TestReadingException | NullPointerException e) {
       ioService.printText("There is no such test");

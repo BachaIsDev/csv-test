@@ -67,6 +67,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         .withIgnoreEmptyLine(true)
         .build();
 
-    return converter.convert(csvReader.parse());
+    List<QuestionDTO> questionDtos = csvReader.parse();
+    return converter.convert(questionDtos);
   }
 }

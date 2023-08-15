@@ -1,6 +1,9 @@
 package com.rnt.test_passing.service.impl;
 
+import static java.util.Objects.isNull;
+
 import com.rnt.test_passing.entity.Option;
+import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.service.TestExecutor;
 import com.rnt.test_passing.converter.impl.OptionConverter;
 import java.util.ArrayList;
@@ -21,6 +24,9 @@ public class TestExecutorImpl implements TestExecutor {
 
   @Override
   public void startTest(List<Question> questions) {
+    if (isNull(questions)) {
+      throw new TestReadingException("There is no any question");
+    }
     ioService.printText("Answer correctly as many questions as possible. Good Luck!");
     Result result = new Result(0, questions.size());
     for (Question question : questions) {

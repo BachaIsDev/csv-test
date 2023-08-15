@@ -38,8 +38,7 @@ class QuestionServiceImplTest {
 
     List<Question> resultQuestions = questionService.getQuestions("test");
 
-    assertThat(resultQuestions.get(0)).isEqualTo(question1);
-    assertThat(resultQuestions.get(1)).isEqualTo(question2);
+    assertThat(resultQuestions).containsExactlyElementsOf(questions);
     verify(questionRepository).findQuestionsByTestName("test");
   }
 

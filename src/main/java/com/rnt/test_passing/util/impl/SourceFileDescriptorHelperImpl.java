@@ -16,12 +16,16 @@ import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelper {
 
@@ -60,7 +64,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
       for(String basePath: basePaths){
         File file = Paths.get(basePath, name).toFile();
         if(file.exists()){
-          return new FileInputStream(String.valueOf(Paths.get(basePath + name)));
+          return new FileInputStream(file.getAbsoluteFile());
         }
       }
     }
@@ -70,10 +74,10 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
   private Set<SourceFileDescriptor> getTestNamesFromResources() {
     ClassLoader classLoader = getClass().getClassLoader();
     try {
-      URI uri = classLoader.getResource("tests").toURI();
-      if(isNull(uri)) {
-        throw new TestReadingException("Can't find such file");
-      }
+      if (isNull(classLoader.getResource(RESOURCE_PATH)))
+        throw new TestReadingException("Can't find internal tests");
+
+      URI uri = classLoader.getResource(RESOURCE_PATH).toURI();
       if (uri.getScheme().equals("jar")) {
         return getTestNamesFromJar();
       } else {
@@ -85,31 +89,25 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromExternal(String path) {
-
-    File folder = new File(path);
-    File[] listOfFiles = folder.listFiles();
-    Set<SourceFileDescriptor> fileNames = new HashSet<>();
-    if (listOfFiles == null) {
-      return fileNames;
-    }
-    for (File file : listOfFiles) {
-      if (file.isFile()) {
-        SourceFileDescriptor descriptor =
-            new SourceFileDescriptor(file.getName(), false);
-        fileNames.add(descriptor);
-      }
-    }
-    return fileNames;
+    return Stream.of(path)
+        .map(File::new)
+        .map(File::listFiles)
+        .filter(Objects::nonNull)
+        .flatMap(Arrays::stream)
+        .filter(File::isFile)
+        .map(f -> new SourceFileDescriptor(f.getName(), false))
+        .collect(Collectors.toSet());
   }
 
   private Set<SourceFileDescriptor> getTestNames() throws URISyntaxException, IOException {
     ClassLoader classLoader = getClass().getClassLoader();
-
     URL resource = classLoader.getResource(RESOURCE_PATH);
-    return Files.walk(Paths.get(resource.toURI()))
-        .filter(Files::isRegularFile)
-        .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
-        .collect(Collectors.toSet());
+    try (Stream<Path> pathStream = Files.walk(Paths.get(resource.toURI()))) {
+      return pathStream
+          .filter(Files::isRegularFile)
+          .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
+          .collect(Collectors.toSet());
+    }
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromJar() throws URISyntaxException, IOException {
@@ -122,11 +120,12 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     // file walks JAR
     URI uri = URI.create("jar:file:" + jarPath);
     try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-      return Files.walk(fs.getPath(RESOURCE_PATH))
-          .filter(Files::isRegularFile)
-          .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
-          .collect(Collectors.toSet());
+      try (Stream<Path> pathStream = Files.walk(fs.getPath(RESOURCE_PATH))) {
+        return pathStream
+            .filter(Files::isRegularFile)
+            .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
+            .collect(Collectors.toSet());
+      }
     }
   }
-
 }

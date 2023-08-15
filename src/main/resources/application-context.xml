@@ -6,8 +6,19 @@
   <bean id="sourceFileDescriptorHelperImpl" class="com.rnt.test_passing.util.impl.SourceFileDescriptorHelperImpl">
     <constructor-arg name="basePaths" value="${application.path}"/>
   </bean>
+  <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+    <property name="converters">
+      <set>
+        <ref bean="dtoConverter"/>
+        <ref bean="optionConverter"/>
+      </set>
+    </property>
+  </bean>
 
   <bean id="dtoConverter" class="com.rnt.test_passing.converter.impl.DtoToQuestionConverter">
+  </bean>
+
+  <bean id="optionConverter" class="com.rnt.test_passing.converter.impl.OptionConverter">
   </bean>
 
   <bean id="questionRepository" class="com.rnt.test_passing.repo.impl.QuestionRepositoryImpl">
@@ -21,14 +32,11 @@
 
   <bean id="testExecutor" class="com.rnt.test_passing.service.impl.TestExecutorImpl">
     <constructor-arg ref="ioService"/>
-    <constructor-arg ref="questionConverter"/>
+    <constructor-arg ref="optionConverter"/>
   </bean>
 
   <bean id="questionService" class="com.rnt.test_passing.service.impl.QuestionServiceImpl">
     <constructor-arg ref="questionRepository"/>
-  </bean>
-
-  <bean id="questionConverter" class="com.rnt.test_passing.converter.impl.OptionConverter">
   </bean>
 
   <bean id="scanner" class="java.util.Scanner">
@@ -37,7 +45,11 @@
 
   <bean id="ioService" class="com.rnt.test_passing.service.impl.IOServiceImpl">
     <constructor-arg name="printStream" value="#{T(java.lang.System).out}"/>
-    <constructor-arg ref="scanner"/>
+    <constructor-arg>
+      <bean class="java.util.Scanner">
+        <constructor-arg value="#{T(java.lang.System).in}"/>
+      </bean>
+    </constructor-arg>
   </bean>
 
   <bean id="launcher" class="com.rnt.test_passing.service.Launcher">
@@ -45,10 +57,6 @@
     <constructor-arg ref="questionService"/>
     <constructor-arg ref="ioService"/>
     <constructor-arg ref="testService"/>
-  </bean>
-
-  <bean id="conversionService"
-    class="org.springframework.context.support.ConversionServiceFactoryBean">
   </bean>
 
   <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
