@@ -66,7 +66,7 @@ class LauncherTest {
 
   @Test
   void launchTest_exceptionShouldBeHandled() {
-    doThrow(new TestReadingException("oops"))
+    doThrow(new TestReadingException("test thrown"))
         .when(testExecutor).startTest(any());
 
     assertThatCode(() -> launcher.launchTest()).doesNotThrowAnyException();
