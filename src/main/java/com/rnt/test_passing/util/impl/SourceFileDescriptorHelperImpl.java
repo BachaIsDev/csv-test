@@ -2,6 +2,7 @@ package com.rnt.test_passing.util.impl;
 
 import static java.util.Objects.isNull;
 
+import com.rnt.test_passing.exception.SourceConnectException;
 import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
 import com.rnt.test_passing.util.SourceFileDescriptorHelper;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -52,7 +54,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
     return descriptors.stream()
         .filter(descriptor -> descriptor.getFileName().equals(name))
         .findFirst()
-        .orElseThrow(() -> new TestReadingException("can't find test with this name"));
+        .orElseThrow(() -> new SourceConnectException("Can't find test with this name"));
   }
 
   @Override
@@ -74,17 +76,20 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
   private Set<SourceFileDescriptor> getTestNamesFromResources() {
     ClassLoader classLoader = getClass().getClassLoader();
     try {
-      if (isNull(classLoader.getResource(RESOURCE_PATH)))
-        throw new TestReadingException("Can't find internal tests");
+      URL resource = classLoader.getResource(RESOURCE_PATH);
 
-      URI uri = classLoader.getResource(RESOURCE_PATH).toURI();
+      if (isNull(resource)) {
+        throw new SourceConnectException("Can't find internal tests");
+      }
+
+      URI uri = resource.toURI();
       if (uri.getScheme().equals("jar")) {
         return getTestNamesFromJar();
       } else {
-        return getTestNames();
+        return getTestNames(resource);
       }
     } catch (IOException | URISyntaxException e) {
-      throw new TestReadingException("There is no such test", e);
+      throw new SourceConnectException("There is no such test", e);
     }
   }
 
@@ -99,9 +104,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
         .collect(Collectors.toSet());
   }
 
-  private Set<SourceFileDescriptor> getTestNames() throws URISyntaxException, IOException {
-    ClassLoader classLoader = getClass().getClassLoader();
-    URL resource = classLoader.getResource(RESOURCE_PATH);
+  private Set<SourceFileDescriptor> getTestNames(URL resource) throws URISyntaxException, IOException {
     try (Stream<Path> pathStream = Files.walk(Paths.get(resource.toURI()))) {
       return pathStream
           .filter(Files::isRegularFile)

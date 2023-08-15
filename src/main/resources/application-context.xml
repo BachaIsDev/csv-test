@@ -6,7 +6,6 @@
   <bean id="sourceFileDescriptorHelperImpl" class="com.rnt.test_passing.util.impl.SourceFileDescriptorHelperImpl">
     <constructor-arg name="basePaths" value="${application.path}"/>
   </bean>
-
   <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
     <property name="converters">
       <set>
@@ -15,51 +14,32 @@
       </set>
     </property>
   </bean>
-
-  <bean id="dtoConverter" class="com.rnt.test_passing.converter.impl.DtoToQuestionConverter">
-  </bean>
-
-  <bean id="optionConverter" class="com.rnt.test_passing.converter.impl.OptionConverter">
-  </bean>
-
+  <bean id="dtoConverter" class="com.rnt.test_passing.converter.impl.QuestionDtoListConverter"/>
+  <bean id="optionConverter" class="com.rnt.test_passing.converter.impl.OptionListConverter"/>
   <bean id="questionRepository" class="com.rnt.test_passing.repo.impl.QuestionRepositoryImpl">
     <constructor-arg ref="sourceFileDescriptorHelperImpl"/>
     <constructor-arg ref="dtoConverter"/>
   </bean>
-
   <bean id="testService" class="com.rnt.test_passing.service.impl.TestServiceImpl">
     <constructor-arg ref="questionRepository"/>
   </bean>
-
   <bean id="testExecutor" class="com.rnt.test_passing.service.impl.TestExecutorImpl">
     <constructor-arg ref="ioService"/>
     <constructor-arg ref="conversionService"/>
   </bean>
-
   <bean id="questionService" class="com.rnt.test_passing.service.impl.QuestionServiceImpl">
     <constructor-arg ref="questionRepository"/>
   </bean>
-
-  <bean id="scanner" class="java.util.Scanner">
-    <constructor-arg value="#{T(java.lang.System).in}"/>
-  </bean>
-
   <bean id="ioService" class="com.rnt.test_passing.service.impl.IOServiceImpl">
     <constructor-arg name="printStream" value="#{T(java.lang.System).out}"/>
-    <constructor-arg>
-      <bean class="java.util.Scanner">
-        <constructor-arg value="#{T(java.lang.System).in}"/>
-      </bean>
-    </constructor-arg>
+    <constructor-arg name="inputStream" value="#{T(java.lang.System).in}"/>
   </bean>
-
   <bean id="launcher" class="com.rnt.test_passing.service.Launcher">
     <constructor-arg ref="testExecutor"/>
     <constructor-arg ref="questionService"/>
     <constructor-arg ref="ioService"/>
     <constructor-arg ref="testService"/>
   </bean>
-
   <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
     <property name="locations">
       <value>application.properties</value>

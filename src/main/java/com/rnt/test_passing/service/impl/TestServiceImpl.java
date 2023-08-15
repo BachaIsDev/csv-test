@@ -13,11 +13,7 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
-  public List<String> getTestNames() {
-    try {
+  public List<String> getTestNames() throws TestReadingException {
       return questionRepository.getQuestionTestNames();
-    } catch (TestReadingException e) {
-      throw new TestReadingException("There is no such test", e);
-    }
   }
 }

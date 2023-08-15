@@ -1,6 +1,7 @@
 package com.rnt.test_passing.service.impl;
 
 import com.rnt.test_passing.exception.TestReadingException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import com.rnt.test_passing.service.IOService;
 import java.util.NoSuchElementException;
@@ -10,9 +11,9 @@ public class IOServiceImpl implements IOService {
   private final PrintStream printStream;
   private final Scanner scanner;
 
-  public IOServiceImpl(PrintStream printStream, Scanner scanner) {
+  public IOServiceImpl(PrintStream printStream, InputStream inputStream) {
     this.printStream = printStream;
-    this.scanner = scanner;
+    this.scanner = new Scanner(inputStream);
   }
 
   @Override

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.core.convert.converter.Converter;
 
-public class OptionConverter implements Converter<List<Option>, String> {
+public class OptionListConverter implements Converter<List<Option>, String> {
   @Override
   public String convert(List<Option> options) {
     return IntStream.range(1, options.size() + 1)

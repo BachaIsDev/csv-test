@@ -15,11 +15,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public List<Question> getQuestions(String testName) {
-    try {
+  public List<Question> getQuestions(String testName) throws TestReadingException {
       return questionRepository.findQuestionsByTestName(testName);
-    } catch (TestReadingException e) {
-      throw new TestReadingException("No such test", e);
-    }
   }
 }

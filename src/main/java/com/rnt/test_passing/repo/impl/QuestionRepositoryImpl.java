@@ -4,7 +4,8 @@ import static java.util.Objects.isNull;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.rnt.test_passing.converter.impl.DtoToQuestionConverter;
+import com.rnt.test_passing.converter.impl.QuestionDtoListConverter;
+import com.rnt.test_passing.exception.SourceConnectException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,10 +23,10 @@ import com.rnt.test_passing.util.SourceFileDescriptorHelper;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
   private final SourceFileDescriptorHelper sourceFileDescriptorHelper;
-  private final DtoToQuestionConverter converter;
+  private final QuestionDtoListConverter converter;
 
   public QuestionRepositoryImpl(SourceFileDescriptorHelper sourceFileDescriptorHelper,
-      DtoToQuestionConverter converter) {
+      QuestionDtoListConverter converter) {
     this.sourceFileDescriptorHelper = sourceFileDescriptorHelper;
     this.converter = converter;
   }
@@ -35,16 +36,21 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     try {
       InputStream inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
       return getQuestions(inputStream);
-    } catch (TestReadingException | FileNotFoundException | NullPointerException e){
+    } catch (SourceConnectException | FileNotFoundException e) {
       throw new TestReadingException("File not found", e);
     }
   }
 
   @Override
   public List<String> getQuestionTestNames() throws TestReadingException {
-    return sourceFileDescriptorHelper.getFinalSourceFileDescriptors().stream()
-        .map(SourceFileDescriptor::getFileName)
-        .toList();
+    try {
+      return sourceFileDescriptorHelper.getFinalSourceFileDescriptors().stream()
+          .map(SourceFileDescriptor::getFileName)
+          .toList();
+    } catch (SourceConnectException e) {
+      throw new TestReadingException("Error during reading from source", e);
+    }
+
   }
 
   private List<Question> getQuestions(InputStream inputStream) throws TestReadingException {
