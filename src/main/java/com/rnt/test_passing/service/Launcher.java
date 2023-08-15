@@ -5,7 +5,6 @@ import com.rnt.test_passing.exception.TestReadingException;
 import java.util.List;
 
 public class Launcher {
-
   private final TestExecutor testExecutor;
   private final QuestionService questionService;
   private final IOService ioService;

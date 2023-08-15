@@ -42,7 +42,10 @@ public class TestExecutorImpl implements TestExecutor {
     showOptions(shuffledQuestion);
 
     int actualAnswer = ioService.readIntByInterval(shuffledQuestion.getOptions().size(), "There is no such option");
-    return shuffledQuestion.getOptions().get(actualAnswer - 1).isCorrect();
+    return shuffledQuestion
+        .getOptions()
+        .get(actualAnswer - 1)
+        .isCorrect();
   }
 
   private void showResult(Result result){
