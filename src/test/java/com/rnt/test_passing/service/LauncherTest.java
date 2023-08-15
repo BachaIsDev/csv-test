@@ -1,12 +1,15 @@
 package com.rnt.test_passing.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.rnt.test_passing.entity.Option;
 import com.rnt.test_passing.entity.Question;
+import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.service.impl.IOServiceImpl;
 import com.rnt.test_passing.service.impl.QuestionServiceImpl;
 import com.rnt.test_passing.service.impl.TestExecutorImpl;
@@ -59,5 +62,13 @@ class LauncherTest {
     launcher.launchTest();
 
     verify(testService).getTestNames();
+  }
+
+  @Test
+  void launchTest_exceptionShouldBeHandled() {
+    doThrow(new TestReadingException("oops"))
+        .when(testExecutor).startTest(any());
+
+    assertThatCode(() -> launcher.launchTest()).doesNotThrowAnyException();
   }
 }
