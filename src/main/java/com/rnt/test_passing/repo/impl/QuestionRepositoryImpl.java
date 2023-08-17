@@ -19,22 +19,22 @@ import com.rnt.test_passing.entity.dto.QuestionDTO;
 import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.repo.QuestionRepository;
 import com.rnt.test_passing.util.SourceFileDescriptor;
-import com.rnt.test_passing.util.SourceFileDescriptorHelper;
+import com.rnt.test_passing.util.DescriptorHelper;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
-  private final SourceFileDescriptorHelper sourceFileDescriptorHelper;
+  private final DescriptorHelper descriptorHelper;
   private final QuestionDtoListConverter converter;
 
-  public QuestionRepositoryImpl(SourceFileDescriptorHelper sourceFileDescriptorHelper,
+  public QuestionRepositoryImpl(DescriptorHelper descriptorHelper,
       QuestionDtoListConverter converter) {
-    this.sourceFileDescriptorHelper = sourceFileDescriptorHelper;
+    this.descriptorHelper = descriptorHelper;
     this.converter = converter;
   }
 
   @Override
   public List<Question> findQuestionsByTestName(String testName) throws TestReadingException {
     try {
-      InputStream inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
+      InputStream inputStream = descriptorHelper.openSourceFileDescriptorStream(testName);
       return getQuestions(inputStream);
     } catch (SourceConnectException | FileNotFoundException e) {
       throw new TestReadingException("File not found", e);
@@ -44,7 +44,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   @Override
   public List<String> getQuestionTestNames() throws TestReadingException {
     try {
-      return sourceFileDescriptorHelper.getFinalSourceFileDescriptors().stream()
+      return descriptorHelper.getFinalSourceFileDescriptors().stream()
           .map(SourceFileDescriptor::getFileName)
           .toList();
     } catch (SourceConnectException e) {

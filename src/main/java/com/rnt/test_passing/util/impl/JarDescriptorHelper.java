@@ -3,9 +3,8 @@ package com.rnt.test_passing.util.impl;
 import static java.util.Objects.isNull;
 
 import com.rnt.test_passing.exception.SourceConnectException;
-import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
-import com.rnt.test_passing.util.SourceFileDescriptorHelper;
+import com.rnt.test_passing.util.DescriptorHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +16,6 @@ import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -28,13 +26,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelper {
+@Component
+public class JarDescriptorHelper implements DescriptorHelper {
 
+  @Value("${application.path}")
   private final List<String> basePaths;
   private static final String RESOURCE_PATH = "tests";
 
-  public SourceFileDescriptorHelperImpl(List<String> basePaths){
+  public JarDescriptorHelper(List<String> basePaths){
     this.basePaths = basePaths;
   }
 
@@ -82,12 +84,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
         throw new SourceConnectException("Can't find internal tests");
       }
 
-      URI uri = resource.toURI();
-      if (uri.getScheme().equals("jar")) {
-        return getTestNamesFromJar();
-      } else {
-        return getTestNames(resource);
-      }
+      return getTestNames();
     } catch (IOException | URISyntaxException e) {
       throw new SourceConnectException("There is no such test", e);
     }
@@ -104,16 +101,7 @@ public class SourceFileDescriptorHelperImpl implements SourceFileDescriptorHelpe
         .collect(Collectors.toSet());
   }
 
-  private Set<SourceFileDescriptor> getTestNames(URL resource) throws URISyntaxException, IOException {
-    try (Stream<Path> pathStream = Files.walk(Paths.get(resource.toURI()))) {
-      return pathStream
-          .filter(Files::isRegularFile)
-          .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
-          .collect(Collectors.toSet());
-    }
-  }
-
-  private Set<SourceFileDescriptor> getTestNamesFromJar() throws URISyntaxException, IOException {
+  private Set<SourceFileDescriptor> getTestNames() throws URISyntaxException, IOException {
     String jarPath = getClass().getProtectionDomain()
         .getCodeSource()
         .getLocation()

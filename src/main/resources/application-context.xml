@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="sourceFileDescriptorHelperImpl" class="com.rnt.test_passing.util.impl.SourceFileDescriptorHelperImpl">
+  <bean id="sourceFileDescriptorHelperImpl" class="com.rnt.test_passing.util.impl.DescriptorHelperHandler">
     <constructor-arg name="basePaths" value="${application.path}"/>
   </bean>
   <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
