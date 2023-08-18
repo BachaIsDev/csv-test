@@ -2,45 +2,59 @@ package com.rnt.test_passing.util.impl;
 
 import static java.util.Objects.isNull;
 
+import com.rnt.test_passing.exception.SourceConnectException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
 import com.rnt.test_passing.util.DescriptorHelper;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DescriptorHelperHandler implements DescriptorHelper {
+public class DescriptorHelperHandler {
+  List<String> basePaths;
+  private Set<DescriptorHelper> helpers;
 
-  private final CommonDescriptorHelper commonDescriptorHelper;
-  private final JarDescriptorHelper jarDescriptorHelper;
-
-  public DescriptorHelperHandler(CommonDescriptorHelper commonDescriptorHelper,
-      JarDescriptorHelper jarDescriptorHelper) {
-    this.commonDescriptorHelper = commonDescriptorHelper;
-    this.jarDescriptorHelper = jarDescriptorHelper;
+  public DescriptorHelperHandler() {
   }
 
-  @Override
   public Set<SourceFileDescriptor> getFinalSourceFileDescriptors() {
-    if (!isNull(commonDescriptorHelper.getFinalSourceFileDescriptors())) {
-      return commonDescriptorHelper.getFinalSourceFileDescriptors();
+    for(DescriptorHelper helper: helpers) {
+      if(!isNull(helper.getFinalSourceFileDescriptors(basePaths))) {
+        return helper.getFinalSourceFileDescriptors(basePaths);
+      }
     }
-    return jarDescriptorHelper.getFinalSourceFileDescriptors();
+    throw new SourceConnectException("Folders are empty");
   }
 
-  @Override
   public SourceFileDescriptor getSourceFileDescriptorByFileName(String name) {
-    if (!isNull(commonDescriptorHelper.getSourceFileDescriptorByFileName(name))) {
-      return commonDescriptorHelper.getSourceFileDescriptorByFileName(name);
+    for(DescriptorHelper helper: helpers) {
+      if(!isNull(helper.getSourceFileDescriptorByFileName(name, basePaths))) {
+        return helper.getSourceFileDescriptorByFileName(name, basePaths);
+      }
     }
-    return jarDescriptorHelper.getSourceFileDescriptorByFileName(name);  }
+    throw new SourceConnectException("Can't find a test");
+  }
 
-  @Override
   public InputStream openSourceFileDescriptorStream(String name) throws FileNotFoundException {
-    if (!isNull(commonDescriptorHelper.openSourceFileDescriptorStream(name))) {
-      return commonDescriptorHelper.openSourceFileDescriptorStream(name);
+    for(DescriptorHelper helper: helpers) {
+      if(!isNull(helper.openSourceFileDescriptorStream(name, basePaths))) {
+        return helper.openSourceFileDescriptorStream(name, basePaths);
+      }
     }
-    return jarDescriptorHelper.openSourceFileDescriptorStream(name);
+    throw new SourceConnectException("Test was not found");
+  }
+
+  public void setHelpers(Set<DescriptorHelper> helpers) {
+    this.helpers = helpers;
+  }
+
+  @Autowired
+  public void setBasePaths(@Value("${application.path}") List<String> basePaths) {
+    this.basePaths = basePaths;
   }
 }

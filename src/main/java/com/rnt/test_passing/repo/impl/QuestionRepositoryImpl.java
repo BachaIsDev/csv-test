@@ -6,6 +6,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.rnt.test_passing.converter.impl.QuestionDtoListConverter;
 import com.rnt.test_passing.exception.SourceConnectException;
+import com.rnt.test_passing.util.impl.DescriptorHelperHandler;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,21 +21,23 @@ import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.repo.QuestionRepository;
 import com.rnt.test_passing.util.SourceFileDescriptor;
 import com.rnt.test_passing.util.DescriptorHelper;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class QuestionRepositoryImpl implements QuestionRepository {
-  private final DescriptorHelper descriptorHelper;
+  private final DescriptorHelperHandler descriptorHelperHandler;
   private final QuestionDtoListConverter converter;
 
-  public QuestionRepositoryImpl(DescriptorHelper descriptorHelper,
+  public QuestionRepositoryImpl(DescriptorHelperHandler descriptorHelperHandler,
       QuestionDtoListConverter converter) {
-    this.descriptorHelper = descriptorHelper;
+    this.descriptorHelperHandler = descriptorHelperHandler;
     this.converter = converter;
   }
 
   @Override
   public List<Question> findQuestionsByTestName(String testName) throws TestReadingException {
     try {
-      InputStream inputStream = descriptorHelper.openSourceFileDescriptorStream(testName);
+      InputStream inputStream = descriptorHelperHandler.openSourceFileDescriptorStream(testName);
       return getQuestions(inputStream);
     } catch (SourceConnectException | FileNotFoundException e) {
       throw new TestReadingException("File not found", e);
@@ -44,7 +47,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   @Override
   public List<String> getQuestionTestNames() throws TestReadingException {
     try {
-      return descriptorHelper.getFinalSourceFileDescriptors().stream()
+      return descriptorHelperHandler.getFinalSourceFileDescriptors().stream()
           .map(SourceFileDescriptor::getFileName)
           .toList();
     } catch (SourceConnectException e) {

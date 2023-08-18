@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,16 +28,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommonDescriptorHelper implements DescriptorHelper {
-  @Value("${application.path}")
-  private final List<String> basePaths;
-  private static final String RESOURCE_PATH = "tests";
-
-  public CommonDescriptorHelper(List<String> basePaths){
-    this.basePaths = basePaths;
-  }
-
   @Override
-  public Set<SourceFileDescriptor> getFinalSourceFileDescriptors() {
+  public Set<SourceFileDescriptor> getFinalSourceFileDescriptors(List<String> basePaths) {
+    Set<SourceFileDescriptor> names = getTestNamesFromResources();
+    if (isNull(names)) {
+      return null;
+    }
     Set<SourceFileDescriptor> descriptors = new HashSet<>(getTestNamesFromResources());
     for(String basePath: basePaths){
       descriptors.addAll(getTestNamesFromExternal(basePath));
@@ -46,28 +43,12 @@ public class CommonDescriptorHelper implements DescriptorHelper {
   }
 
   @Override
-  public SourceFileDescriptor getSourceFileDescriptorByFileName(String name) {
-    Set<SourceFileDescriptor> descriptors = getFinalSourceFileDescriptors();
+  public SourceFileDescriptor getSourceFileDescriptorByFileName(String name, List<String> basePaths) {
+    Set<SourceFileDescriptor> descriptors = getFinalSourceFileDescriptors(basePaths);
     return descriptors.stream()
         .filter(descriptor -> descriptor.getFileName().equals(name))
         .findFirst()
         .orElseThrow(() -> new SourceConnectException("Can't find test with this name"));
-  }
-
-  @Override
-  public InputStream openSourceFileDescriptorStream(String name) throws FileNotFoundException {
-    SourceFileDescriptor descriptor = getSourceFileDescriptorByFileName(name);
-    if(descriptor.isFromResources()) {
-      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "/" + name);
-    } else {
-      for(String basePath: basePaths){
-        File file = Paths.get(basePath, name).toFile();
-        if(file.exists()){
-          return new FileInputStream(file.getAbsoluteFile());
-        }
-      }
-    }
-    throw new FileNotFoundException(String.format("File %s not found", name));
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromResources() {
@@ -100,6 +81,8 @@ public class CommonDescriptorHelper implements DescriptorHelper {
           .filter(Files::isRegularFile)
           .map(file -> new SourceFileDescriptor(file.getFileName().toString(), true))
           .collect(Collectors.toSet());
+    } catch (FileSystemNotFoundException e) {
+      return null;
     }
   }
 }

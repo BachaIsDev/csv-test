@@ -31,17 +31,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JarDescriptorHelper implements DescriptorHelper {
-
-  @Value("${application.path}")
-  private final List<String> basePaths;
-  private static final String RESOURCE_PATH = "tests";
-
-  public JarDescriptorHelper(List<String> basePaths){
-    this.basePaths = basePaths;
-  }
-
   @Override
-  public Set<SourceFileDescriptor> getFinalSourceFileDescriptors() {
+  public Set<SourceFileDescriptor> getFinalSourceFileDescriptors(List<String> basePaths) {
     Set<SourceFileDescriptor> descriptors = new HashSet<>(getTestNamesFromResources());
     for(String basePath: basePaths){
       descriptors.addAll(getTestNamesFromExternal(basePath));
@@ -51,28 +42,12 @@ public class JarDescriptorHelper implements DescriptorHelper {
   }
 
   @Override
-  public SourceFileDescriptor getSourceFileDescriptorByFileName(String name) {
-    Set<SourceFileDescriptor> descriptors = getFinalSourceFileDescriptors();
+  public SourceFileDescriptor getSourceFileDescriptorByFileName(String name, List<String> basePaths) {
+    Set<SourceFileDescriptor> descriptors = getFinalSourceFileDescriptors(basePaths);
     return descriptors.stream()
         .filter(descriptor -> descriptor.getFileName().equals(name))
         .findFirst()
         .orElseThrow(() -> new SourceConnectException("Can't find test with this name"));
-  }
-
-  @Override
-  public InputStream openSourceFileDescriptorStream(String name) throws FileNotFoundException {
-    SourceFileDescriptor descriptor = getSourceFileDescriptorByFileName(name);
-    if(descriptor.isFromResources()) {
-      return getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + "/" + name);
-    } else {
-      for(String basePath: basePaths){
-        File file = Paths.get(basePath, name).toFile();
-        if(file.exists()){
-          return new FileInputStream(file.getAbsoluteFile());
-        }
-      }
-    }
-    throw new FileNotFoundException(String.format("File %s not found", name));
   }
 
   private Set<SourceFileDescriptor> getTestNamesFromResources() {

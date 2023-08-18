@@ -6,12 +6,17 @@ import java.io.PrintStream;
 import com.rnt.test_passing.service.IOService;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class IOServiceImpl implements IOService {
+
   private final PrintStream printStream;
   private final Scanner scanner;
 
-  public IOServiceImpl(PrintStream printStream, InputStream inputStream) {
+  public IOServiceImpl(@Value("#{T(java.lang.System).out}") PrintStream printStream,
+      @Value("#{T(java.lang.System).in}") InputStream inputStream) {
     this.printStream = printStream;
     this.scanner = new Scanner(inputStream);
   }

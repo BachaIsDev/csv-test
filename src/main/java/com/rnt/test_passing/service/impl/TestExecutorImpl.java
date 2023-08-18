@@ -12,7 +12,9 @@ import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.Result;
 import com.rnt.test_passing.service.IOService;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TestExecutorImpl implements TestExecutor {
   private final IOService ioService;
   private final ConversionService conversionService;

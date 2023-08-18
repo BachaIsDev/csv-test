@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component("optionListConverter")
 public class OptionListConverter implements Converter<List<Option>, String> {
   @Override
   public String convert(List<Option> options) {
