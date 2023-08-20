@@ -4,12 +4,8 @@ import static java.util.Objects.isNull;
 
 import com.rnt.test_passing.exception.SourceConnectException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
-import com.rnt.test_passing.util.DescriptorHelper;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -17,7 +13,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,19 +21,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JarDescriptorHelper implements DescriptorHelper {
-  @Override
+public class JarDescriptorProvider extends DefaultDescriptorProvider {
   public Set<SourceFileDescriptor> getFinalSourceFileDescriptors(List<String> basePaths) {
-    Set<SourceFileDescriptor> descriptors = new HashSet<>(getTestNamesFromResources());
-    for(String basePath: basePaths){
-      descriptors.addAll(getTestNamesFromExternal(basePath));
+    if (isNull(basePaths)) {
+      return Set.of();
     }
-
-    return descriptors;
+    return Stream.concat(getTestNamesFromResources().stream(),
+            basePaths.stream().flatMap(bp -> getTestNamesFromExternal(bp).stream()))
+        .collect(Collectors.toSet());
   }
 
   @Override

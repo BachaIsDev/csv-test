@@ -4,12 +4,8 @@ import static java.util.Objects.isNull;
 
 import com.rnt.test_passing.exception.SourceConnectException;
 import com.rnt.test_passing.util.SourceFileDescriptor;
-import com.rnt.test_passing.util.DescriptorHelper;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystemNotFoundException;
@@ -23,11 +19,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommonDescriptorHelper implements DescriptorHelper {
+public class CommonDescriptorProvider extends DefaultDescriptorProvider {
   @Override
   public Set<SourceFileDescriptor> getFinalSourceFileDescriptors(List<String> basePaths) {
     Set<SourceFileDescriptor> names = getTestNamesFromResources();
