@@ -11,15 +11,19 @@ import java.util.List;
 import com.rnt.test_passing.entity.Question;
 import com.rnt.test_passing.entity.Result;
 import com.rnt.test_passing.service.IOService;
+import java.util.Locale;
+import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TestExecutorImpl implements TestExecutor {
+  private final MessageSource messageSource;
   private final IOService ioService;
   private final ConversionService conversionService;
 
-  public TestExecutorImpl(IOService ioService, ConversionService conversionService) {
+  public TestExecutorImpl(MessageSource messageSource, IOService ioService, ConversionService conversionService) {
+    this.messageSource = messageSource;
     this.ioService = ioService;
     this.conversionService = conversionService;
   }
@@ -43,7 +47,8 @@ public class TestExecutorImpl implements TestExecutor {
     Question shuffledQuestion = shuffleOptionsInQuestion(question);
     showOptions(shuffledQuestion);
 
-    int actualAnswer = ioService.readIntByInterval(shuffledQuestion.getOptions().size(), "There is no such option");
+    int actualAnswer = ioService.readIntByInterval(shuffledQuestion.getOptions().size(),
+        messageSource.getMessage("app.no_opt", null, Locale.getDefault()));
     return shuffledQuestion
         .getOptions()
         .get(actualAnswer - 1)
