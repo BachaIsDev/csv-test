@@ -6,7 +6,9 @@ import com.rnt.test_passing.entity.dto.QuestionDTO;
 import com.rnt.test_passing.exception.TestReadingException;
 import java.util.List;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class QuestionDtoListConverter implements Converter<List<QuestionDTO>, List<Question>> {
   @Override
   public List<Question> convert(List<QuestionDTO> source) {

@@ -6,6 +6,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.rnt.test_passing.converter.impl.QuestionDtoListConverter;
 import com.rnt.test_passing.exception.SourceConnectException;
+import com.rnt.test_passing.util.impl.DescriptorProviderHandler;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,22 +20,23 @@ import com.rnt.test_passing.entity.dto.QuestionDTO;
 import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.repo.QuestionRepository;
 import com.rnt.test_passing.util.SourceFileDescriptor;
-import com.rnt.test_passing.util.SourceFileDescriptorHelper;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class QuestionRepositoryImpl implements QuestionRepository {
-  private final SourceFileDescriptorHelper sourceFileDescriptorHelper;
+  private final DescriptorProviderHandler descriptorProviderHandler;
   private final QuestionDtoListConverter converter;
 
-  public QuestionRepositoryImpl(SourceFileDescriptorHelper sourceFileDescriptorHelper,
+  public QuestionRepositoryImpl(DescriptorProviderHandler descriptorProviderHandler,
       QuestionDtoListConverter converter) {
-    this.sourceFileDescriptorHelper = sourceFileDescriptorHelper;
+    this.descriptorProviderHandler = descriptorProviderHandler;
     this.converter = converter;
   }
 
   @Override
   public List<Question> findQuestionsByTestName(String testName) throws TestReadingException {
     try {
-      InputStream inputStream = sourceFileDescriptorHelper.openSourceFileDescriptorStream(testName);
+      InputStream inputStream = descriptorProviderHandler.openSourceFileDescriptorStream(testName);
       return getQuestions(inputStream);
     } catch (SourceConnectException | FileNotFoundException e) {
       throw new TestReadingException("File not found", e);
@@ -44,7 +46,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
   @Override
   public List<String> getQuestionTestNames() throws TestReadingException {
     try {
-      return sourceFileDescriptorHelper.getFinalSourceFileDescriptors().stream()
+      return descriptorProviderHandler.getFinalSourceFileDescriptors().stream()
           .map(SourceFileDescriptor::getFileName)
           .toList();
     } catch (SourceConnectException e) {

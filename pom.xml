@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <org.springframework.version>6.0.4</org.springframework.version>
+    <spring-boot.version>3.1.2</spring-boot.version>
     <junit.jupiter.version>5.9.1</junit.jupiter.version>
     <open.csv.version>5.7.1</open.csv.version>
     <jackson.core.version>2.14.2</jackson.core.version>
@@ -54,15 +54,19 @@
       <version>${jackson.core.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${org.springframework.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>${spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      <version>${spring-boot.version}</version>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -83,7 +87,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.0.2</version>
@@ -97,12 +100,10 @@
           </archive>
         </configuration>
       </plugin>
-
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
         <version>2.5.2</version>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -111,7 +112,6 @@
           <target>17</target>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>

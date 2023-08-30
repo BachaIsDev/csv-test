@@ -4,7 +4,9 @@ import com.rnt.test_passing.exception.TestReadingException;
 import com.rnt.test_passing.repo.QuestionRepository;
 import com.rnt.test_passing.service.TestService;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TestServiceImpl implements TestService {
   private final QuestionRepository questionRepository;
 
