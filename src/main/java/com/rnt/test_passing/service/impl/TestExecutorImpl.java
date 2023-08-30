@@ -33,7 +33,7 @@ public class TestExecutorImpl implements TestExecutor {
     if (isNull(questions)) {
       throw new TestReadingException("There is no any question");
     }
-    ioService.printText("Answer correctly as many questions as possible. Good Luck!");
+    ioService.printText(messageSource.getMessage("app.good_luck", null, new Locale("ru")));
     Result result = new Result(0, questions.size());
     for (Question question : questions) {
       boolean rightAnswer = processQuestion(question);
@@ -48,7 +48,7 @@ public class TestExecutorImpl implements TestExecutor {
     showOptions(shuffledQuestion);
 
     int actualAnswer = ioService.readIntByInterval(shuffledQuestion.getOptions().size(),
-        messageSource.getMessage("app.no_opt", null, Locale.getDefault()));
+        messageSource.getMessage("app.no_opt", null, new Locale("ru")));
     return shuffledQuestion
         .getOptions()
         .get(actualAnswer - 1)
@@ -58,16 +58,16 @@ public class TestExecutorImpl implements TestExecutor {
   private void showResult(Result result){
     ioService.printText(
         ((double) result.getRightAnswers() / (double) result.getTotalAnswers()) * 100
-            + "% correctly");
+            + messageSource.getMessage("app.result", null, new Locale("ru")));
   }
 
   private void showOptions(Question question){
     String answersAsList = conversionService.convert(question.getOptions(), String.class);
 
     ioService.printText(question.getIssue());
-    ioService.printText("Answers:");
+    ioService.printText(messageSource.getMessage("app.answers", null, new Locale("ru")));
     ioService.printText(answersAsList);
-    ioService.printText("Enter an answer: ");
+    ioService.printText(messageSource.getMessage("app.enter_answer", null, new Locale("ru")));
   }
 
   private Question shuffleOptionsInQuestion(Question question) {

@@ -31,14 +31,14 @@ public class Launcher {
       List<Question> questionList = questionService.getQuestions(testName);
       testExecutor.startTest(questionList);
     } catch (TestReadingException e) {
-      ioService.printText(messageSource.getMessage("app.error", new Object[]{""},
-          Locale.getDefault()));
+      ioService.printText(messageSource.getMessage("app.error", null,
+          new Locale("ru")));
     }
   }
 
   private String printAndAskTestNames() {
-    ioService.printText(messageSource.getMessage("app.greetings", new Object[]{""},
-        Locale.getDefault()));
+    ioService.printText(messageSource.getMessage("app.greetings", null,
+        new Locale("ru")));
     testService.getTestNames().forEach(ioService::printText);
     return ioService.readText();
   }
